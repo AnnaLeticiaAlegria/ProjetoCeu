@@ -1,0 +1,22 @@
+#include "wclock.ceu"
+#include "pin_02.ceu"
+#include "pin_03.ceu"
+
+input bool PIN_11;
+input bool PIN_03;
+input bool PIN_A0;
+
+output bool PIN_13;
+//Funcionalidade: Continua em chase enquanto não encontra nenhuma linha
+
+par/or do
+    await PIN_11; //left sensor
+with
+    await PIN_03; //right sensor
+with
+    await PIN_A0; //front sensor
+with
+    await 10s;    //seria substituido pela função de Chase
+end
+
+emit PIN_13(true); //aqui entra o tratamento de encontrar a linha: Andar para trás e girar

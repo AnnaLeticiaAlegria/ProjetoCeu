@@ -1,0 +1,21 @@
+#include "wclock.ceu"
+#include "pin_02.ceu"
+
+output bool PIN_13;
+
+//_ceu_arduino_assert(0, 3);
+
+par/or do
+	await 10s;
+with
+	await PIN_02;
+with
+	loop do
+		emit PIN_13(true);
+		await 1s;
+		emit PIN_13(false);
+		await 1s;
+	end
+end
+
+await FOREVER;
