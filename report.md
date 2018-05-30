@@ -1,6 +1,5 @@
 Semana 28/05/2018 - 03/06/2018
 
     - Planejamentos:
-        - Conseguir os sensores para testar os códigos
-        - Reescrever códigos de teste do MiniMais
-        - Reescrever códigos de teste do MiniPuma+
+        - reescrever o código de contagem de tempo do relogio
+        - Permitir mudar o horário atual do relógio

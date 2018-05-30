@@ -1,0 +1,86 @@
+#include "pin_02.ceu"
+#include "pin_03.ceu"
+#include "wclock.ceu"
+
+
+output bool PIN_13; /*LED1*/
+output bool PIN_12; /*LED2*/
+output bool PIN_11; /*LED3*/
+output bool PIN_10; /*LED4*/
+
+output bool PIN_04; //LATCH_DIO
+output bool PIN_07; //CLK_DIO
+output bool PIN_08; //DATA_DIO
+
+native _shiftOut;
+native _MSBFIRST;
+
+//_ceu_arduino_assert(0, 3);
+var[] int horario = [ 0,0,0,0 ];
+
+// Segment byte maps for numbers 0 to 9 
+var[] byte segment_map = [ 0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90 ];
+// Byte maps to select digit 1 to 4 
+var[] byte segment_select = [ 0xF1, 0xF2, 0xF4, 0xF8 ];
+
+par/or do
+  var int i = 0;
+  loop do
+    if(i > 3) then
+      i = 0;
+    end
+     
+    emit PIN_04(false);
+    _shiftOut ( 8, 7, _MSBFIRST, segment_map[i] );
+    _shiftOut ( 8, 7, _MSBFIRST, segment_select[horario[i]] );
+    emit PIN_04(true);
+    i = i + 1;
+  end
+
+with
+  loop do
+    par/or do
+      loop do
+        await 1s;
+        horario[3] = horario[3] + 1;
+        if horario[3] > 9 then
+          horario[2] = horario[2] + 1;
+          horario[3] = 0;
+          emit PIN_13(true);
+        end
+        if horario[2] > 5 then
+          horario[1] = horario[1] + 1;
+          horario[2] = 0;
+        end
+        if horario[1] > 9 then
+          horario[1] = 0;
+          horario[0] = horario[0] + 1;
+          emit PIN_13(false);
+        end
+        if horario[0] == 2 and horario[1] == 4 then
+          horario[0] = 0;
+          horario[1] = 0;
+        end
+      end
+
+    with
+      par/and do //ajustar horario --> apertar dois botoes ao mesmo tempo
+        await PIN_02;
+      with
+        await PIN_03;
+      end
+    end
+
+    par/or do
+      loop do
+        emit PIN_13(true);
+        await 1s;
+        emit PIN_13(false);
+        await 1s;
+      end
+    with
+      await PIN_02; //ajustar hora
+    end
+  end
+end
+await FOREVER;
