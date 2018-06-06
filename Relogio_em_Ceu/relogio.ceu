@@ -69,7 +69,7 @@ with
       end
 
     with
-      par/and do //ajustar horario --> apertar dois botoes ao mesmo tempo
+      par/and do //ajustar horario --> apertar dois botoes ao mesmo tempo --> original é pressionar o botão 1 por 2 segundos
         await PIN_02;
       with
         await PIN_03;
@@ -83,7 +83,59 @@ with
             await 1s;
         end
       with
-        await PIN_02; //ajustar hora
+        var int apertou = 0;
+        par/or do
+          par/and do
+            await PIN_02; //apertar o botão para ajustar hora --> original é pressionar o botão 2 por 2 segundos
+          with
+            await 2s; //testar se assim espera o botão ser pressionado pelo tempo determinado
+          end
+          apertou = 1; //se chegou aqui, o par/and de cima terminou então o botão foi apertado
+        with
+          await 5s; //se a pessoa não apertar nada por 5 segundos, sai do modo de ajuste de horário
+        end
+        if apertou == 1 then 
+          //ajuste de hora
+          par/or do
+            //quando está ajustando as horas, pisca o LED2 e deixa o LED1 aceso de forma fixa
+            emit PIN_13(false);
+            loop do
+              emit PIN_12(true);
+              await 1s;
+              emit PIN_12(false);
+              await 1s;
+            end
+          with
+            loop do
+              //DUVIDA: ver como faria para sair desse modo se a pessoa não apertar nada por 5s
+              par/or do
+                await PIN_02; //apertar o botão 3 acrescenta uma hora
+                //pesquisar como fazer um evento de incrementar hora para não ter que reescrever o código
+              with
+                await PIN_03; //apertar o botão 1 diminui uma hora
+                //analogamente, criar um evento de descrementar hora
+              with
+                par/and do
+                  await PIN_02; // apertar o botão 2 por 2 segundos vai para o modo de ajuste de minutos
+                with
+                  await 2s;
+                end
+                //aqui entra o ajuste de minutos
+                par/or do
+                  emit PIN_12(false); //no modo de ajuste de minutos pisca o LED3 e fixa o LED2
+                  loop do
+                    emit PIN_11(true);
+                    await 1s;
+                    emit PIN_11(false);
+                    await 1s;
+                  end
+                with
+                  
+                end
+              end
+            end
+          end
+        end
       end
     end
   end
