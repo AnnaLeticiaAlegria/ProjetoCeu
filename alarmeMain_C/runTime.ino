@@ -30,7 +30,7 @@ double initChangeAlarm;
 /* Write a decimal number between 0 and 9 to one of the 4 digits of the display */
 void WriteNumberToSegment(byte Segment, byte Value)
 {
-  digitalWrite(LATCH_DIO, LOW);
+  digitalWrite(LATCH_DIO, LOW);                                                                                                                                                                                               
   shiftOut(DATA_DIO, CLK_DIO, MSBFIRST, SEGMENT_MAP[Value]);
   shiftOut(DATA_DIO, CLK_DIO, MSBFIRST, SEGMENT_SELECT[Segment] );
   digitalWrite(LATCH_DIO, HIGH);
