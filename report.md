@@ -15,3 +15,6 @@ Semana 04/06/2018 - 10/06/2018
         - corrigir erros do código da contagem de tempo do relógio
         - reescrever o código de mudança de horário
         - reescrever o código de ligar e desligar o alarme
+        
+    - Realizados:
+        - relógio está mostrando contando o tempo de forma correta (quando ligado, começa em 00:00)
