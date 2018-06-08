@@ -1,0 +1,46 @@
+#include "wclock.ceu"
+
+input  (int,bool) PIN;
+output bool PIN_12;
+
+code/await Pin (var int pin) -> NEVER do
+    await async (pin) do
+        { pinMode(@pin, INPUT); }
+        var bool v1 = _digitalRead(pin) as bool;
+        loop do
+            var bool v2 = _digitalRead(pin) as bool;
+            if v1 != v2 then
+                v1 = v2;
+                emit PIN(pin,v1);
+            end
+        end
+    end
+end
+
+spawn Pin(_A1);
+
+code/await Segurou_botao1 (none) -> none do
+    var int pin;
+    var bool v;
+    loop do
+        (pin,v) = await PIN until pin==_A1 and v==false;
+        par/or do
+            (pin,v) = await PIN until pin==_A1 and v==true;
+        with
+            await 2s;
+            break;
+        end
+    end
+end
+
+par do
+    await Segurou_botao1();
+    _ceu_arduino_assert(0,1);
+with
+    loop do
+        emit PIN_12(false);
+        await 500ms;
+        emit PIN_12(true);
+        await 500ms;
+    end
+end

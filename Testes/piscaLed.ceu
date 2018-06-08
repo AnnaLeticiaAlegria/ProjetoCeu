@@ -1,0 +1,35 @@
+input  (int,bool) PIN;
+
+code/await Pin (var int pin) -> NEVER do
+    await async (pin) do
+        { pinMode(@pin, INPUT); }
+        var bool v1 = _digitalRead(pin) as bool;
+        loop do
+            var bool v2 = _digitalRead(pin) as bool;
+            if v1 != v2 then
+                v1 = v2;
+//_ceu_arduino_assert(0, 5+pin-_A1+1);
+                emit PIN(pin,v1);
+            end
+        end
+    end
+end
+
+spawn Pin(_A1);
+spawn Pin(_A2);
+spawn Pin(_A3);
+
+        
+par do
+    var int pin;
+    (pin,_) = await PIN until pin==_A1;
+    _ceu_arduino_assert(0,1);
+with
+    var int pin;
+    (pin,_) = await PIN until pin==_A2;
+    _ceu_arduino_assert(0,2);
+with
+    var int pin;
+    (pin,_) = await PIN until pin==_A3;
+    _ceu_arduino_assert(0,3);
+end

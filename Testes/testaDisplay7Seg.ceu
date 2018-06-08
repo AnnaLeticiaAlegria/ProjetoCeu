@@ -1,0 +1,63 @@
+#include "wclock.ceu"
+
+output bool PIN_04; //LATCH_DIO
+output bool PIN_07; //CLK_DIO
+output bool PIN_08; //DATA_DIO
+
+native _shiftOut;
+native _MSBFIRST;
+
+// Segment byte maps for numbers 0 to 9 
+var[10] byte segment_map = [ 0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90 ];
+// Byte maps to select digit 1 to 4 
+var[4] byte segment_select = [ 0xF1, 0xF2, 0xF4, 0xF8 ];
+
+code/await Display (var&[4] int v) -> NEVER do
+    loop do
+        var int i;
+        loop i in [0 -> 4[ do
+            emit PIN_04(false);
+            _shiftOut ( 8, 7, _MSBFIRST, outer.segment_map[v[i]] );
+            _shiftOut ( 8, 7, _MSBFIRST, outer.segment_select[i] );
+            emit PIN_04(true);
+        end
+        //await async do end;
+        await 5ms;
+    end
+end
+
+var[4] int horario = [ 0,0,0,0 ];
+
+code/tight AumentaHora (var&[4] int vHorario) -> none do
+    vHorario[1] = vHorario[1] + 1;
+    if vHorario[1] > 9 then
+        vHorario[1] = 0;
+        vHorario[0] = vHorario[0] + 1;
+    end
+    if vHorario[0] == 2 and vHorario[1] == 4 then
+        vHorario[0] = 0;
+        vHorario[1] = 0;
+    end
+end
+
+code/tight AumentaMinuto (var&[4] int vHorario) -> none do
+    vHorario[3] = vHorario[3] + 1;
+    if vHorario[3] > 9 then
+        vHorario[2] = vHorario[2] + 1;
+        vHorario[3] = 0;
+    end
+    if vHorario[2] > 5 then
+        call AumentaHora(&vHorario);
+        vHorario[2] = 0;
+    end
+end
+
+await 1s;
+loop do
+    await 1s;
+    call AumentaMinuto(&horario);
+    spawn Display(&horario);
+    //await 1s;
+end
+
+await FOREVER;

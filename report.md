@@ -18,3 +18,13 @@ Semana 04/06/2018 - 10/06/2018
         
     - Realizados:
         - relógio está mostrando contando o tempo de forma correta (quando ligado, começa em 00:00)
+        - reescrever o código de mudança de horário - feito mas separar em partes para debugar qual é o problema
+        - reescrever o código de ligar e desligar o alarme - feito mas não testado
+        
+Semana 11/06/2018 - 17/06/2018
+
+    - Planejamentos:
+        - separar em partes o código de mudança de horário e corrigir o erro
+        - reescrever o código de setar o alarme
+        
+    - Realizados:
