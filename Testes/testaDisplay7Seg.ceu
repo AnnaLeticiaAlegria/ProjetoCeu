@@ -21,8 +21,8 @@ code/await Display (var&[4] int v) -> NEVER do
             _shiftOut ( 8, 7, _MSBFIRST, outer.segment_select[i] );
             emit PIN_04(true);
         end
-        //await async do end;
-        await 5ms;
+        await async do end;
+        //await 5ms;
     end
 end
 
@@ -52,12 +52,12 @@ code/tight AumentaMinuto (var&[4] int vHorario) -> none do
     end
 end
 
-await 1s;
+//await 1s;
 loop do
+    //await 1s;
+    spawn Display(&horario);
     await 1s;
     call AumentaMinuto(&horario);
-    spawn Display(&horario);
-    //await 1s;
 end
 
 await FOREVER;

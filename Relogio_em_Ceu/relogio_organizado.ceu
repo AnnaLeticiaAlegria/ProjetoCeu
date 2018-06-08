@@ -58,8 +58,8 @@ code/await Display (var&[4] int v) -> NEVER do
             _shiftOut ( 8, 7, _MSBFIRST, outer.segment_select[i] );
             emit PIN_04(true);
         end
-        //await async do end;
-        await 5ms; //enquanto nao tem o async
+        await async do end;
+        //await 5ms; //enquanto nao tem o async
     end
 end
 
@@ -154,25 +154,37 @@ code/await Segurou_botao3 (none) -> none do
     end
 end
 
+spawn Display(&horario);
+
 var int i;
 var bool alarmeOn = false;
 loop i do
-  par/or do
-     loop do
-       await 1s; //Esperar 1 min
-       call AumentaMinuto(&horario); //DUVIDA: posso controlar isso por uma variavel global?
-       spawn Display(&horario);
-       
-       emit PIN_10(not alarmeOn);
-       
-     end
-   with //ajuste de horario
-     await Segurou_botao1(); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
+   _ceu_arduino_assert(i==0, 2);
+   
+   var int funcao =
+   do
+     par do
+      loop do
+        await 1s; //Esperar 1 min
+        call AumentaMinuto(&horario); //DUVIDA: posso controlar isso por uma variavel global?
+        emit PIN_10(not alarmeOn);
+      end
+    with //ajuste de horario
+      await Segurou_botao1(); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
+      escape 1;
+    with
+      await Segurou_botaoX(); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
+      escape X;
+    end
+  end;
+  
+  if funcao == 1 then
      loop do
        par/or do
            await 5s; //se nao pressionar nada por 5 segundos, sai do estado
            continue/i;
        with
+           Pisca(13);
            loop do
              emit PIN_13(false);
              await 1s;
@@ -184,7 +196,10 @@ loop i do
            break;
        end
      end
-      
+     
+     _ceu_arduino_assert(0, 1);
+
+#if 0
      //modo de ajuste de hora --> LED1 fixo e LED2 piscando
       
      loop do
@@ -339,6 +354,7 @@ loop i do
         end
       end
   */    
+#endif
   end
 end
     
