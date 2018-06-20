@@ -28,3 +28,11 @@ Semana 11/06/2018 - 17/06/2018
         - reescrever o código de setar o alarme
         
     - Realizados:
+        - separar em partes o código de mudança de horário e corrigir o erro - os erros ainda ocorrem
+        - reescrito o código de setar o alarme - feito mas gera erro
+
+Semana 18/06/2018 - 24/06/2018
+    
+    - Planejamentos:
+        - separar em partes o código de mudança de horário e corrigir o erro
+        -  ver porque o 1segundo de await está demorando mais do que 1 segundo

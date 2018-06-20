@@ -58,8 +58,8 @@ code/await Display (var&[4] int v) -> NEVER do
             _shiftOut ( 8, 7, _MSBFIRST, outer.segment_select[i] );
             emit PIN_04(true);
         end
-        await async do end;
-        //await 5ms; //enquanto nao tem o async
+        //await async do end;
+        await 5ms; //enquanto nao tem o async
     end
 end
 
@@ -154,51 +154,85 @@ code/await Segurou_botao3 (none) -> none do
     end
 end
 
-spawn Display(&horario);
+/* Nao pode ter await em funcao code/tight --> como fazer uma funcao que pisque o LED?
+code/tight Pisca (var int pin) -> none do
+    loop do
+        emit PIN_13(false); //emit PIN(pin,true); nao esta funcionando DUVIDA!!
+        await 1s;
+        emit PIN_13(true);
+        await 1s;
+    end
+end*/
 
+spawn Display(&horario);
 var int i;
+var int identificarAcao;
 var bool alarmeOn = false;
 loop i do
-   _ceu_arduino_assert(i==0, 2);
+   //_ceu_arduino_assert(i==0, 2);
    
-   var int funcao =
+   identificarAcao =
    do
-     par do
+    par do
       loop do
         await 1s; //Esperar 1 min
-        call AumentaMinuto(&horario); //DUVIDA: posso controlar isso por uma variavel global?
+        call AumentaMinuto(&horario);
         emit PIN_10(not alarmeOn);
       end
     with //ajuste de horario
       await Segurou_botao1(); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
       escape 1;
     with
-      await Segurou_botaoX(); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
-      escape X;
+      await Segurou_botao2(); //alarme ON/OFF -> segura botao 2 --> LED4 vai ficar fixo se o alarme estiver ligado
+      escape 2;
+    with
+      await Segurou_botao3(); //ajustar alarme -> segura botao 3 --> LED3 vai ficar piscando
+      escape 3;
     end
-  end;
+   end;
   
-  if funcao == 1 then
+   if identificarAcao == 1 then
      loop do
        par/or do
            await 5s; //se nao pressionar nada por 5 segundos, sai do estado
            continue/i;
        with
-           Pisca(13);
+           //call Pisca(13);
            loop do
-             emit PIN_13(false);
-             await 1s;
-             emit PIN_13(true);
-             await 1s;
+              emit PIN_13(true); //emit PIN(pin,true); nao esta funcionando DUVIDA!!
+              await 1s;
+              emit PIN_13(false);
+              await 1s;
            end
        with
            await Segurou_botao2(); //segura botao 2 para ajustar as horas
+           _ceu_arduino_assert(0, 3);
            break;
        end
      end
      
      _ceu_arduino_assert(0, 1);
-
+   else
+     if identificarAcao == 2 then
+        alarmeOn = not alarmeOn;
+     else
+        loop do
+            par/or do
+                await 5s; //se nao pressionar nada por 5 segundos, sai do estado
+                continue/i;
+            with
+                //call Pisca(11);
+                loop do
+                    emit PIN_11(true); //emit PIN(pin,true); nao esta funcionando DUVIDA!!
+                    await 1s;
+                    emit PIN_11(false);
+                    await 1s;
+                end
+            end
+        end
+     end
+   end
+end
 #if 0
      //modo de ajuste de hora --> LED1 fixo e LED2 piscando
       
@@ -353,8 +387,8 @@ loop i do
           break;
         end
       end
-  */    
-#endif
+  */   
   end
 end
-    
+     
+#endif

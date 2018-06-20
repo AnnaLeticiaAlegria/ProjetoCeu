@@ -1,0 +1,8 @@
+Bugs:
+
+    - as vezes segurar qualquer botão de primeira não funciona, só funciona quando tenta novamente
+    - não entra na função de aumentar minuto depois que espera os 5 segundos pra sair do modo de ajuste
+    - erros dão ao apertar o botão 1 ou 3 e esperar 5 segundos após o LED acender. --> piscam 19 vezes o LED --> ceu_assert_ex((src->len >= src_i+n), "access out of bounds", trace);
+    - 1 segundo de espera para aparecer no display está demorando mais do que 1 segundo
+    
+    - Deu para ligar o alarme e a contagem continuou. Dois segundos depois, no segundo 11, deu erro -> led piscou 18 vezes
