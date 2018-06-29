@@ -27,47 +27,24 @@ emit PIN_12(true);
 emit PIN_13(true);
 emit PIN_03(true);
 
-/*
-var int i;
-loop i do
-    await 1s;
-    emit PIN_13(i%2==1);
-end
-*/
-
 var[4] int horario = [ 0,0,0,0 ];
 var[4] int alarme = [ 0,0,0,0 ];
 
-#if 0
-input (int,bool) PIN;
-code/await Pin (var int pin) -> NEVER do
-    await async (pin) do
-        { pinMode(@pin, INPUT); }
-        var bool v1 = _digitalRead(pin) as bool;
-        loop do
-            var bool v2 = _digitalRead(pin) as bool;
-            if v1 != v2 then
-                v1 = v2;
-                emit PIN(pin,v1);
-            end
-        end
-    end
-end
-#else
-event (int,bool) pin;
+input (int,bool) PIN_;
 code/await Pin_ (var int pin) -> NEVER do
     { pinMode(@pin, INPUT); }
     var bool v1 = _digitalRead(pin) as bool;
     loop do
-        await 10ms;
+        await 50ms;
         var bool v2 = _digitalRead(pin) as bool;
         if v1 != v2 then
             v1 = v2;
-            emit outer.pin(pin,v1);
+            await async (pin,v1) do
+                emit PIN_(pin,v1);
+            end
         end
     end
 end
-#endif
 
 spawn Pin_(_A1);
 spawn Pin_(_A2);
@@ -141,30 +118,26 @@ code/call DiminuiMinuto (var&[4] int vHorario) -> none do
 end
 
 code/await Segurou_botao1 (none) -> none do
-#if 1
     var int pin;
     var bool v;
     loop do
-        (pin,v) = await outer.pin until pin==_A1 and v==false;
+        (pin,v) = await PIN_ until pin==_A1 and v==false;
         par/or do
-            (pin,v) = await outer.pin until pin==_A1 and v==true;
+            (pin,v) = await PIN_ until pin==_A1 and v==true;
         with
             await 2s;
             break;
         end
     end
-#else
-    await 10s;
-#endif
 end
 
 code/await Segurou_botao2 (none) -> none do
     var int pin;
     var bool v;
     loop do
-        (pin,v) = await outer.pin until pin==_A2 and v==false;
+        (pin,v) = await PIN_ until pin==_A2 and v==false;
         par/or do
-            (pin,v) = await outer.pin until pin==_A2 and v==true;
+            (pin,v) = await PIN_ until pin==_A2 and v==true;
         with
             await 2s;
             break;
@@ -176,9 +149,9 @@ code/await Segurou_botao3 (none) -> none do
     var int pin;
     var bool v;
     loop do
-        (pin,v) = await outer.pin until pin==_A3 and v==false;
+        (pin,v) = await PIN_ until pin==_A3 and v==false;
         par/or do
-            (pin,v) = await outer.pin until pin==_A3 and v==true;
+            (pin,v) = await PIN_ until pin==_A3 and v==true;
         with
             await 2s;
             break;
@@ -201,8 +174,6 @@ var int i;
 var int identificarAcao;
 var bool alarmeOn = false;
 loop i do
-   //_ceu_arduino_assert(i==0, 2);
-   
    identificarAcao =
    do
     par do
@@ -213,14 +184,13 @@ loop i do
       end
     with //ajuste de horario
       await Segurou_botao1(); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
-      //await 2s;
       escape 1;
-    /*with
+    with
       await Segurou_botao2(); //alarme ON/OFF -> segura botao 2 --> LED4 vai ficar fixo se o alarme estiver ligado
       escape 2;
     with
       await Segurou_botao3(); //ajustar alarme -> segura botao 3 --> LED3 vai ficar piscando
-      escape 3;*/
+      escape 3;
     end
    end;
   
@@ -283,11 +253,11 @@ end
            end
        with
            var int pin;
-           (pin,_) = await PIN until pin==_A1; //pressionar o botao 1 decrementa uma hora
+           (pin,_) = await PIN_ until pin==_A1; //pressionar o botao 1 decrementa uma hora
            call DiminuiHora(&horario);
        with
            var int pin;
-           (pin,_) = await PIN until pin==_A3; //pressionar o botao 3 acrescenta uma hora
+           (pin,_) = await PIN_ until pin==_A3; //pressionar o botao 3 acrescenta uma hora
            call AumentaHora(&horario);
        with
            await Segurou_botao2(); //segura botao 2 para ajustar os minutos
@@ -311,11 +281,11 @@ end
            end
        with
            var int pin;
-           (pin,_) = await PIN until pin==_A1; //pressionar o botao 1 decrementa um minuto
+           (pin,_) = await PIN_ until pin==_A1; //pressionar o botao 1 decrementa um minuto
            call DiminuiMinuto(&horario);
        with
            var int pin;
-           (pin,_) = await PIN until pin==_A3; //pressionar o botao 3 acresenta um minuto
+           (pin,_) = await PIN_ until pin==_A3; //pressionar o botao 3 acresenta um minuto
            call AumentaMinuto(&horario);
        /*O original em C nao tem essa funcionalidade de sair ao pressionar por 2 segundos
         * with
@@ -360,11 +330,11 @@ end
            end
        with
            var int pin;
-           (pin,_) = await PIN until pin==_A1; //pressionar o botao 1 decrementa uma hora
+           (pin,_) = await PIN_ until pin==_A1; //pressionar o botao 1 decrementa uma hora
            call DiminuiHora(&horario);
        with
            var int pin;
-           (pin,_) = await PIN until pin==_A3; //pressionar o botao 3 acresenta uma hora
+           (pin,_) = await PIN_ until pin==_A3; //pressionar o botao 3 acresenta uma hora
            call AumentaHora(&horario);
        with
            await Segurou_botao2(); //segura botao 2 para ajustar os minutos
@@ -388,11 +358,11 @@ end
            end
        with
            var int pin;
-           (pin,_) = await PIN until pin==_A1; //pressionar o botao 1 decrementa um minuto
+           (pin,_) = await PIN_ until pin==_A1; //pressionar o botao 1 decrementa um minuto
            call DiminuiMinuto(&horario);
        with
            var int pin;
-           (pin,_) = await PIN until pin==_A3; //pressionar o botao 3 acresenta um minuto
+           (pin,_) = await PIN_ until pin==_A3; //pressionar o botao 3 acresenta um minuto
            call AumentaMinuto(&horario);
        end
      end
