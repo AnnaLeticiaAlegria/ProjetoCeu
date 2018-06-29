@@ -1,4 +1,5 @@
 #include "wclock.ceu"
+#include "gpio.ceu"
 
 output bool PIN_03; //BUZZER
 
@@ -26,11 +27,19 @@ emit PIN_12(true);
 emit PIN_13(true);
 emit PIN_03(true);
 
+/*
+var int i;
+loop i do
+    await 1s;
+    emit PIN_13(i%2==1);
+end
+*/
+
 var[4] int horario = [ 0,0,0,0 ];
 var[4] int alarme = [ 0,0,0,0 ];
 
-input  (int,bool) PIN;
-
+#if 0
+input (int,bool) PIN;
 code/await Pin (var int pin) -> NEVER do
     await async (pin) do
         { pinMode(@pin, INPUT); }
@@ -44,10 +53,25 @@ code/await Pin (var int pin) -> NEVER do
         end
     end
 end
+#else
+event (int,bool) pin;
+code/await Pin_ (var int pin) -> NEVER do
+    { pinMode(@pin, INPUT); }
+    var bool v1 = _digitalRead(pin) as bool;
+    loop do
+        await 10ms;
+        var bool v2 = _digitalRead(pin) as bool;
+        if v1 != v2 then
+            v1 = v2;
+            emit outer.pin(pin,v1);
+        end
+    end
+end
+#endif
 
-spawn Pin(_A1);
-spawn Pin(_A2);
-spawn Pin(_A3);
+spawn Pin_(_A1);
+spawn Pin_(_A2);
+spawn Pin_(_A3);
 
 code/await Display (var&[4] int v) -> NEVER do
     loop do
@@ -63,9 +87,10 @@ code/await Display (var&[4] int v) -> NEVER do
     end
 end
 
-code/tight AumentaHora (var&[4] int vHorario) -> none do
-    vHorario[1] = vHorario[1] + 1;
-    if vHorario[1] > 9 then
+code/call AumentaHora (var&[4] int vHorario) -> none do
+    if vHorario[1] < 9 then
+        vHorario[1] = vHorario[1] + 1;
+    else
         vHorario[1] = 0;
         vHorario[0] = vHorario[0] + 1;
     end
@@ -75,11 +100,12 @@ code/tight AumentaHora (var&[4] int vHorario) -> none do
     end
 end
 
-code/tight AumentaMinuto (var&[4] int vHorario) -> none do
-    vHorario[3] = vHorario[3] + 1;
-    if vHorario[3] > 9 then
-        vHorario[2] = vHorario[2] + 1;
+code/call AumentaMinuto (var&[4] int vHorario) -> none do
+    if vHorario[3] < 9 then
+        vHorario[3] = vHorario[3] + 1;
+    else
         vHorario[3] = 0;
+        vHorario[2] = vHorario[2] + 1;
     end
     if vHorario[2] > 5 then
         call AumentaHora(&vHorario);
@@ -87,19 +113,21 @@ code/tight AumentaMinuto (var&[4] int vHorario) -> none do
     end
 end
 
-code/tight DiminuiHora (var&[4] int vHorario) -> none do
-    vHorario[1] = vHorario[1] - 1;
-    if vHorario[1] < 0 then
-        vHorario[0] = vHorario[2] - 1;
+code/call DiminuiHora (var&[4] int vHorario) -> none do
+    if vHorario[1] > 0 then
+        vHorario[1] = vHorario[1] - 1;
+    else
         vHorario[1] = 9;
-    end
-    if vHorario[0] < 0 then
-        vHorario[0] = 2;
-        vHorario[1] = 3;
+        if vHorario [0] > 0 then
+            vHorario[0] = vHorario[2] - 1;
+        else
+            vHorario[0] = 2;
+            vHorario[1] = 3;
+        end
     end
 end
 
-code/tight DiminuiMinuto (var&[4] int vHorario) -> none do
+code/call DiminuiMinuto (var&[4] int vHorario) -> none do
     vHorario[3] = vHorario[3] - 1;
     if vHorario[3] < 0 then
         vHorario[2] = vHorario[2] - 1;
@@ -113,26 +141,30 @@ code/tight DiminuiMinuto (var&[4] int vHorario) -> none do
 end
 
 code/await Segurou_botao1 (none) -> none do
+#if 1
     var int pin;
     var bool v;
     loop do
-        (pin,v) = await PIN until pin==_A1 and v==false;
+        (pin,v) = await outer.pin until pin==_A1 and v==false;
         par/or do
-            (pin,v) = await PIN until pin==_A1 and v==true;
+            (pin,v) = await outer.pin until pin==_A1 and v==true;
         with
             await 2s;
             break;
         end
     end
+#else
+    await 10s;
+#endif
 end
 
 code/await Segurou_botao2 (none) -> none do
     var int pin;
     var bool v;
     loop do
-        (pin,v) = await PIN until pin==_A2 and v==false;
+        (pin,v) = await outer.pin until pin==_A2 and v==false;
         par/or do
-            (pin,v) = await PIN until pin==_A2 and v==true;
+            (pin,v) = await outer.pin until pin==_A2 and v==true;
         with
             await 2s;
             break;
@@ -144,9 +176,9 @@ code/await Segurou_botao3 (none) -> none do
     var int pin;
     var bool v;
     loop do
-        (pin,v) = await PIN until pin==_A3 and v==false;
+        (pin,v) = await outer.pin until pin==_A3 and v==false;
         par/or do
-            (pin,v) = await PIN until pin==_A3 and v==true;
+            (pin,v) = await outer.pin until pin==_A3 and v==true;
         with
             await 2s;
             break;
@@ -181,13 +213,14 @@ loop i do
       end
     with //ajuste de horario
       await Segurou_botao1(); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
+      //await 2s;
       escape 1;
-    with
+    /*with
       await Segurou_botao2(); //alarme ON/OFF -> segura botao 2 --> LED4 vai ficar fixo se o alarme estiver ligado
       escape 2;
     with
       await Segurou_botao3(); //ajustar alarme -> segura botao 3 --> LED3 vai ficar piscando
-      escape 3;
+      escape 3;*/
     end
    end;
   
