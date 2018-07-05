@@ -1,8 +1,14 @@
 Bugs:
 
-    - as vezes segurar qualquer botão de primeira não funciona, só funciona quando tenta novamente
+    - pressionar qualquer botão quando ele volta do loop (i=1) faz ele travar
+    - no arquivo: testaAumentaHora.ceu --> aumentar as horas funciona na primeira vez. Após apertar pela segunda vez algum botão, LED pisca 23 vezes
+                                       --> sem a parte de piscar LED do par/or, aumentar as horas funciona para todas as vezes, portanto que não pressione o botão por muito tempo ou com um intervalo pequeno após o ultimo botão ter sido pressionado
+                                       --> diminuir as horas não funciona (a hora é diminuida na primeira vez mas logo em seguida trava (led pisca 23 vezes)
+    
+Resolvidos:
+
     - não entra na função de aumentar minuto depois que espera os 5 segundos pra sair do modo de ajuste
     - erros dão ao apertar o botão 1 ou 3 e esperar 5 segundos após o LED acender. --> piscam 19 vezes o LED --> ceu_assert_ex((src->len >= src_i+n), "access out of bounds", trace);
     - 1 segundo de espera para aparecer no display está demorando mais do que 1 segundo
-    
     - Deu para ligar o alarme e a contagem continuou. Dois segundos depois, no segundo 11, deu erro -> led piscou 18 vezes
+    - ao voltar a contagem (após nao apertar botão por 5 segundos), o horário volta para 00:00 (se não achar o problema, pode definir o horário inicial somente com i = 0)

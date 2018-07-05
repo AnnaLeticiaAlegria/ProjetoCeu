@@ -117,13 +117,13 @@ code/call DiminuiMinuto (var&[4] int vHorario) -> none do
     end
 end
 
-code/await Segurou_botao1 (none) -> none do
+code/await Segurou_botao (var int botao) -> none do
     var int pin;
     var bool v;
     loop do
-        (pin,v) = await PIN_ until pin==_A1 and v==false;
+        (pin,v) = await PIN_ until pin==botao and v==false;
         par/or do
-            (pin,v) = await PIN_ until pin==_A1 and v==true;
+            (pin,v) = await PIN_ until pin==botao and v==true;
         with
             await 2s;
             break;
@@ -131,50 +131,22 @@ code/await Segurou_botao1 (none) -> none do
     end
 end
 
-code/await Segurou_botao2 (none) -> none do
-    var int pin;
-    var bool v;
-    loop do
-        (pin,v) = await PIN_ until pin==_A2 and v==false;
-        par/or do
-            (pin,v) = await PIN_ until pin==_A2 and v==true;
-        with
-            await 2s;
-            break;
-        end
-    end
-end
 
-code/await Segurou_botao3 (none) -> none do
-    var int pin;
-    var bool v;
+code/await Pisca (var int pin) -> NEVER do
     loop do
-        (pin,v) = await PIN_ until pin==_A3 and v==false;
-        par/or do
-            (pin,v) = await PIN_ until pin==_A3 and v==true;
-        with
-            await 2s;
-            break;
-        end
-    end
-end
-
-/* Nao pode ter await em funcao code/tight --> como fazer uma funcao que pisque o LED?
-code/tight Pisca (var int pin) -> none do
-    loop do
-        emit PIN_13(false); //emit PIN(pin,true); nao esta funcionando DUVIDA!!
+        emit PIN (pin,true);
         await 1s;
-        emit PIN_13(true);
+        emit PIN (pin,false);
         await 1s;
     end
-end*/
+end
 
 spawn Display(&horario);
 var int i;
 var int identificarAcao;
 var bool alarmeOn = false;
 loop i do
-   identificarAcao =
+   identificarAcao = _;
    do
     par do
       loop do
@@ -183,19 +155,18 @@ loop i do
         emit PIN_10(not alarmeOn);
       end
     with //ajuste de horario
-      await Segurou_botao1(); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
-       _ceu_arduino_assert(i==0,2);
+      await Segurou_botao(_A1); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
       escape 1;
     with
-      await Segurou_botao2(); //alarme ON/OFF -> segura botao 2 --> LED4 vai ficar fixo se o alarme estiver ligado
+      await Segurou_botao(_A2); //alarme ON/OFF -> segura botao 2 --> LED4 vai ficar fixo se o alarme estiver ligado
       escape 2;
     with
-      await Segurou_botao3(); //ajustar alarme -> segura botao 3 --> LED3 vai ficar piscando
+      await Segurou_botao(_A3); //ajustar alarme -> segura botao 3 --> LED3 vai ficar piscando
       escape 3;
     end
    end;
   
-    _ceu_arduino_assert(i==0,3);
+    //_ceu_arduino_assert(0,3);
    if identificarAcao == 1 then
      loop do
        _ceu_arduino_assert(i==0,1);
@@ -203,15 +174,9 @@ loop i do
            await 5s; //se nao pressionar nada por 5 segundos, sai do estado
            continue/i;
        with
-           //call Pisca(13);
-           loop do
-              emit PIN_13(true); //emit PIN(pin,true); nao esta funcionando DUVIDA!!
-              await 1s;
-              emit PIN_13(false);
-              await 1s;
-           end
+           await Pisca(13);
        with
-           await Segurou_botao2(); //segura botao 2 para ajustar as horas
+           await Segurou_botao(_A2); //segura botao 2 para ajustar as horas
            break;
        end
      end
@@ -221,15 +186,11 @@ loop i do
      loop do
        par/or do
            await 5s; //se nao pressionar nada por 5 segundos, sai do estado
+           emit PIN_13(true);
            continue/i;
        with
            emit PIN_13(false); 
-           loop do
-             emit PIN_12(true);
-             await 1s;
-             emit PIN_12(false);
-             await 1s;
-           end
+           await Pisca(12);
        with
            var int pin;
            (pin,_) = await PIN_ until pin==_A1; //pressionar o botao 1 decrementa uma hora
@@ -239,7 +200,7 @@ loop i do
            (pin,_) = await PIN_ until pin==_A3; //pressionar o botao 3 acrescenta uma hora
            call AumentaHora(&horario);
        with
-           await Segurou_botao2(); //segura botao 2 para ajustar os minutos
+           await Segurou_botao(_A2); //segura botao 2 para ajustar os minutos
            break;
        end
      end
@@ -254,13 +215,7 @@ loop i do
                 await 5s; //se nao pressionar nada por 5 segundos, sai do estado
                 continue/i;
             with
-                //call Pisca(11);
-                loop do
-                    emit PIN_11(true); //emit PIN(pin,true); nao esta funcionando DUVIDA!!
-                    await 1s;
-                    emit PIN_11(false);
-                    await 1s;
-                end
+                await Pisca(11);
             end
         end
      end
