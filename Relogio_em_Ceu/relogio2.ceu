@@ -1,4 +1,4 @@
-#include "wclock.ceu"
+//#include "wclock.ceu"
 #include "gpio.ceu"
 
 output bool PIN_03; //BUZZER
@@ -27,7 +27,7 @@ emit PIN_12(true);
 emit PIN_13(true);
 emit PIN_03(true);
 
-var[4] int horario = [ 0,1,0,0 ];
+var[4] int horario = [ 2,3,5,9 ];
 var[4] int alarme = [ 0,0,0,0 ];
 
 input (int,bool) PIN_;
@@ -59,8 +59,8 @@ code/await Display (var&[4] int v) -> NEVER do
             _shiftOut ( 8, 7, _MSBFIRST, outer.segment_select[i] );
             emit PIN_04(true);
         end
-        //await async do end;
-        await 5ms; //enquanto nao tem o async
+        await async do end;
+        //await 5ms; //enquanto nao tem o async
     end
 end
 
@@ -117,6 +117,16 @@ code/call DiminuiMinuto (var&[4] int vHorario) -> none do
     end
 end
 
+code/call ComparaVetores (var&[4] int vet1, var&[4] int vet2) -> int do
+    var int i;
+    loop i in [0 -> 4[ do
+        if vet1[i] != vet2[i] then
+            escape 0;
+        end
+    end
+    escape 1;
+end
+
 code/await Segurou_botao (var int botao) -> none do
     var int pin;
     var bool v;
@@ -144,21 +154,32 @@ end
 spawn Display(&horario);
 var int i;
 var int identificarAcao;
+var int isTimeOut = 0;
 var bool alarmeOn = false;
 loop i do
-   identificarAcao = _;
+   identificarAcao = 
    do
     par do
       loop do
-        await 1s; //Esperar 1 min
-        call AumentaMinuto(&horario);
-        emit PIN_10(not alarmeOn);
+        par/or do
+            await 1s; //Esperar 1 min
+            call AumentaMinuto(&horario);
+        with //par;or adicionado para ver se ComparaVetores funcionava, testar se é aqui mesmo que entraria ou não
+            if alarmeOn == true then
+                isTimeOut = call ComparaVetores(&alarme, &horario);
+                if isTimeOut == 1 then
+                    _ceu_arduino_assert(0,2);
+                end
+            end
+            await FOREVER;
+        end
       end
     with //ajuste de horario
       await Segurou_botao(_A1); //ajustar horario -> segura botao 1 --> LED1 vai ficar piscando
       escape 1;
     with
       await Segurou_botao(_A2); //alarme ON/OFF -> segura botao 2 --> LED4 vai ficar fixo se o alarme estiver ligado
+      emit PIN_10(not alarmeOn);
       escape 2;
     with
       await Segurou_botao(_A3); //ajustar alarme -> segura botao 3 --> LED3 vai ficar piscando
@@ -167,14 +188,25 @@ loop i do
    end;
   
     //_ceu_arduino_assert(0,3);
-   if identificarAcao == 1 then
+   if identificarAcao != 2 then
+     var int led1;
+     var int led2;
+     var int led3;
+     if identificarAcao == 1 then
+         led1 = 13;
+         led2 = 12;
+         led3 = 11;
+     else
+         led1 = 11;
+         led2 = 13;
+         led3 = 12;
+     end
      loop do
-       _ceu_arduino_assert(i==0,1);
        par/or do
            await 5s; //se nao pressionar nada por 5 segundos, sai do estado
            continue/i;
        with
-           await Pisca(13);
+           await Pisca(led1);
        with
            await Segurou_botao(_A2); //segura botao 2 para ajustar as horas
            break;
@@ -186,39 +218,87 @@ loop i do
      loop do
        par/or do
            await 5s; //se nao pressionar nada por 5 segundos, sai do estado
-           emit PIN_13(true);
+           if identificarAcao == 1 then
+               emit PIN_13(true);
+           else
+               emit PIN_11(true);
+           end
            continue/i;
        with
-           emit PIN_13(false); 
-           await Pisca(12);
+           if identificarAcao == 1 then
+               emit PIN_13(false);
+           else
+               emit PIN_11(false);
+           end
+           await Pisca(led2);
        with
            var int pin;
            (pin,_) = await PIN_ until pin==_A1; //pressionar o botao 1 decrementa uma hora
-           call DiminuiHora(&horario);
+           if identificarAcao == 1 then
+               call DiminuiHora(&horario);
+           else
+               call DiminuiHora(&alarme);
+           end
+           await 500ms;
        with
            var int pin;
            (pin,_) = await PIN_ until pin==_A3; //pressionar o botao 3 acrescenta uma hora
-           call AumentaHora(&horario);
+           if identificarAcao == 1 then
+               call AumentaHora(&horario);
+           else
+               call AumentaHora(&alarme);
+           end
+           await 500ms;
        with
            await Segurou_botao(_A2); //segura botao 2 para ajustar os minutos
            break;
        end
      end
      
-    // _ceu_arduino_assert(0,2);
-   else
-     if identificarAcao == 2 then
-        alarmeOn = not alarmeOn;
-     else
-        loop do
-            par/or do
-                await 5s; //se nao pressionar nada por 5 segundos, sai do estado
-                continue/i;
-            with
-                await Pisca(11);
-            end
-        end
+     //modo de ajuste de minuto --> LED1 e LED2 fixos e LED3 piscando
+      
+     loop do
+       par/or do
+           await 5s; //se nao pressionar nada por 5 segundos, sai do estado
+           if identificarAcao == 1 then
+               emit PIN_12(true);
+           else
+               emit PIN_11(true);
+           end
+           emit PIN_13(true);
+           continue/i;
+       with
+           emit PIN_13(false);
+           if identificarAcao == 1 then
+               emit PIN_12(false);
+           else
+               emit PIN_11(false);
+           end
+           await Pisca(led3);
+       with
+           var int pin;
+           (pin,_) = await PIN_ until pin==_A1; //pressionar o botao 1 decrementa uma hora
+           if identificarAcao == 1 then
+               call DiminuiMinuto(&horario);
+           else
+               call DiminuiMinuto(&alarme);
+           end
+           await 500ms;
+       with
+           var int pin;
+           (pin,_) = await PIN_ until pin==_A3; //pressionar o botao 3 acrescenta uma hora
+           if identificarAcao == 1 then
+               call AumentaMinuto(&horario);
+           else
+               call AumentaMinuto(&alarme);
+           end
+           await 500ms;
+       end
      end
+     
+    
+   else
+     alarmeOn = not alarmeOn;
    end
 end
 
