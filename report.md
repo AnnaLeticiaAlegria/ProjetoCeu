@@ -57,4 +57,7 @@ Semana 09/07/2018 - 15/07/2018
         - ajuste do horário do alarme funcionando
         - alarme tocar
     
-    
+    -- Realizados:
+        - ajuste do horário do alarme funcionando
+        - alarme toca
+        - modo soneca implementado (checar como fazer para os botões 1 e 3 ativarem o modo e não caírem no ajuste de horário)

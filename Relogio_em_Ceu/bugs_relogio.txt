@@ -1,9 +1,8 @@
 Bugs:
 
-    - pressionar qualquer botão quando ele volta do loop (i=1) faz ele travar
-    - no arquivo: testaAumentaHora.ceu --> aumentar as horas funciona na primeira vez. Após apertar pela segunda vez algum botão, LED pisca 23 vezes
-                                       --> sem a parte de piscar LED do par/or, aumentar as horas funciona para todas as vezes, portanto que não pressione o botão por muito tempo ou com um intervalo pequeno após o ultimo botão ter sido pressionado
-                                       --> diminuir as horas não funciona (a hora é diminuida na primeira vez mas logo em seguida trava (led pisca 23 vezes)
+    - Para o alarme tocar: funciona se começar a variável alarmeOn no true. Se ela começar no false e pressionar o botão 2 para que ela vire true, não funciona (não entra no if)
+    - Para ativar o modo soneca, é preciso pressionar os botões 1 e 3 por 2 segundos. Porém, fazer isso ativa o ajuste de horário ou o ajuste de alarme. Daria para resolver com uma variável global, mas pensar em uma solução mais bonita
+
     
 Resolvidos:
 
@@ -12,3 +11,7 @@ Resolvidos:
     - 1 segundo de espera para aparecer no display está demorando mais do que 1 segundo
     - Deu para ligar o alarme e a contagem continuou. Dois segundos depois, no segundo 11, deu erro -> led piscou 18 vezes
     - ao voltar a contagem (após nao apertar botão por 5 segundos), o horário volta para 00:00 (se não achar o problema, pode definir o horário inicial somente com i = 0)
+    - pressionar qualquer botão quando ele volta do loop (i=1) faz ele travar
+    - no arquivo: testaAumentaHora.ceu --> aumentar as horas funciona na primeira vez. Após apertar pela segunda vez algum botão, LED pisca 23 vezes
+                                       --> sem a parte de piscar LED do par/or, aumentar as horas funciona para todas as vezes, portanto que não pressione o botão por muito tempo ou com um intervalo pequeno após o ultimo botão ter sido pressionado
+                                       --> diminuir as horas não funciona (a hora é diminuida na primeira vez mas logo em seguida trava (led pisca 23 vezes)
