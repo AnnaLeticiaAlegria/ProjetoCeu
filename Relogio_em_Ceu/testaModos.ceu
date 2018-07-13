@@ -1,0 +1,105 @@
+#include "gpio.ceu"
+
+output bool PIN_04; //LATCH_DIO
+output bool PIN_07; //CLK_DIO
+output bool PIN_08; //DATA_DIO
+
+native _shiftOut;
+native _MSBFIRST;
+
+// Segment byte maps for numbers 0 to 9 
+var[10] byte segment_map = [ 0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90 ];
+// Byte maps to select digit 1 to 4 
+var[4] byte segment_select = [ 0xF1, 0xF2, 0xF4, 0xF8 ];
+
+input (int,bool) PIN_;
+code/await Pin_ (var int pin) -> NEVER do
+    { pinMode(@pin, INPUT); }
+    var bool v1 = _digitalRead(pin) as bool;
+    loop do
+        await 50ms;
+        var bool v2 = _digitalRead(pin) as bool;
+        if v1 != v2 then
+            v1 = v2;
+            await async (pin,v1) do
+                emit PIN_(pin,v1);
+            end
+        end
+    end
+end
+
+spawn Pin_(_A1);
+spawn Pin_(_A2);
+spawn Pin_(_A3);
+
+code/await Display (var int num) -> NEVER do
+    loop do
+        var int i;
+        loop i in [0 -> 4[ do
+            emit PIN_04(false);
+            _shiftOut ( 8, 7, _MSBFIRST, outer.segment_map[num] );
+            _shiftOut ( 8, 7, _MSBFIRST, outer.segment_select[i] );
+            emit PIN_04(true);
+        end
+        await async do end;
+    end
+end
+
+code/await Segurou_botao (var int botao) -> none do
+    var int pin;
+    var bool v;
+    loop do
+        (pin,v) = await PIN_ until pin==botao and v==false;
+        par/or do
+            (pin,v) = await PIN_ until pin!=botao or v==true;
+        with
+            await 2s;
+            break;
+        end
+    end
+end
+
+code/await IncHorario (none) -> NEVER do
+		spawn Display(1);
+    loop do
+      await 1s;
+
+    end
+end
+
+code/await Timeout (none) -> none do
+	loop do
+		par/or do
+			await 5s;
+			break;
+		with
+			await ...
+		end
+	end
+end
+
+var int identificarAcao;
+loop do
+		identificarAcao = 
+		do
+			spawn IncHorario();
+      par do
+        await Segurou_botao(_A1);
+        escape 1;
+      with
+				await Segurou_botao(_A3); 
+	      escape 3;
+			end
+		end;
+
+		par/or do
+			await Timeout();
+		with
+			if identificarAcao == 1 then
+				await Display(2);
+			else
+		   	await Display(3);
+			end
+	end
+end
+

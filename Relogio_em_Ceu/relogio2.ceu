@@ -128,7 +128,7 @@ code/await Segurou_botao (var int botao) -> none do
     loop do
         (pin,v) = await PIN_ until pin==botao and v==false;
         par/or do
-            (pin,v) = await PIN_ until pin==botao and v==true;
+            (pin,v) = await PIN_ until pin!=botao or v==true;
         with
             await 2s;
             break;
