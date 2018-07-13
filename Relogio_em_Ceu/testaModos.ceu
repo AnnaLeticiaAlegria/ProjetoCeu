@@ -63,19 +63,7 @@ code/await IncHorario (none) -> NEVER do
 		spawn Display(1);
     loop do
       await 1s;
-
     end
-end
-
-code/await Timeout (none) -> none do
-	loop do
-		par/or do
-			await 5s;
-			break;
-		with
-			await ...
-		end
-	end
 end
 
 var int identificarAcao;
@@ -92,14 +80,12 @@ loop do
 			end
 		end;
 
-		par/or do
-			await Timeout();
-		with
-			if identificarAcao == 1 then
-				await Display(2);
-			else
-		   	await Display(3);
-			end
-	end
+		if identificarAcao == 1 then
+			spawn Display(2);
+			await 5s;
+		else
+     	spawn Display(3);
+			await 5s;
+		end
 end
 
