@@ -1,5 +1,9 @@
 #include "gpio.ceu"
 
+//#define BugHora
+#define Teste //Modo teste ativado -> Quando chega na hora do alarme, o LED4 pisca
+							//Modo teste desativado -> Quando chega na hora do alarme, o buzzer é ativado
+
 output bool PIN_03; //BUZZER
 
 output bool PIN_13; /*LED1*/
@@ -139,24 +143,30 @@ code/await Pisca (var int pin) -> NEVER do
 	end
 end
 
-code/await IncHorario (var&[4] int vHorario) -> NEVER do
-	spawn Display(&vHorario);
+code/await IncHorario (none) -> NEVER do
+#ifdef BugHora
+#else
+	spawn Display(&outer.horario);
+#endif
 	loop do
 		await 15s; //espera 1min antes de incrementar o horário
-		call AumentaMinuto(&vHorario);
+		call AumentaMinuto(&outer.horario);
 	end
 end
 
-code/await AlarmTimeOut (var&[4] int v) -> NEVER do
+code/await AlarmTimeOut (none) -> NEVER do
 	loop do
 		if (outer.alarmeOn == true and outer.alarme[0] == outer.horario[0] and outer.alarme[1] == outer.horario[1] and outer.alarme[2] == outer.horario[2] and outer.alarme[3] == outer.horario[3]) then
     	par/or do
     	  loop do
-    	    //emit PIN_03(false);
+#ifdef Teste
+         	await Pisca(10); //substitui o buzzer nos testes
+#else
+    	    emit PIN_03(false);
           await 300ms;
           emit PIN_03(true);
           await 1s;
-         	await Pisca(10); //substitui o buzzer nos testes
+#endif
         end
       with
 				par/and do
@@ -171,23 +181,23 @@ code/await AlarmTimeOut (var&[4] int v) -> NEVER do
         call AumentaMinuto(&outer.alarme);
       end
       await 500ms;
+		else
+			emit PIN_03(true); //para o buzzer parar de tocar quando o alarme é desligado
     end
 		await 500ms;
 	end
 end
 
-#if 0
-code/await ModoHora (var&[4] int vHora, var&[4] int vAlarme) -> none do
-	spawn Display(&vHora);
-	spawn IncHorario(&vHora);
-	if outer.alarmeOn == true then
-		spawn AlarmTimeOut(&vHora, &vAlarme);
-	end
+#ifdef BugHora
+code/await ModoHora (none) -> none do
+	spawn Display(&outer.horario);
+	spawn IncHorario();
+	spawn AlarmTimeOut();
 end
 #endif
 
-code/await ModoOnOff (var&[4] int vHorario) -> none do
-	spawn Display (&vHorario);
+code/await ModoOnOff (none) -> none do
+	spawn Display (&outer.horario);
   emit PIN_10(outer.alarmeOn);
 	outer.alarmeOn = not outer.alarmeOn;
 end
@@ -261,10 +271,13 @@ var int identificarAcao;
 loop do
 	identificarAcao = 
 	do
-		spawn IncHorario(&horario);
-		spawn AlarmTimeOut(&horario);
-		//spawn ModoHora(&horario, &alarme);
-    par do
+#ifdef BugHora
+		spawn ModoHora();
+#else
+		spawn IncHorario();
+		spawn AlarmTimeOut();
+#endif
+		par do
 	    await Segurou_botao(_A1);
       escape 1;
     with
@@ -282,7 +295,7 @@ loop do
 		if identificarAcao == 1 then
 			await ModoAjuste (&horario,13,12,11);
 		else/if identificarAcao == 2 then
-			await ModoOnOff(&horario);
+			await ModoOnOff();
 		else
 	   	await ModoAjuste (&alarme,11,13,12);
 		end

@@ -67,5 +67,8 @@
 
 ###		- Planejamentos:
 				- corrigir os bugs da versão organizada do código
+				- ajustar o modo soneca				
 
 ###		- Realizados:
+				- bug de ligar/desligar alarme corrigido
+				- bug de mostrar as horas corrigido
