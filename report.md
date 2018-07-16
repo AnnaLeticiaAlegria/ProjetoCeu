@@ -60,4 +60,12 @@
 ###   - Realizados:
         - ajuste do horário do alarme funcionando
         - alarme toca
-        - modo soneca implementado (checar como fazer para os botões 1 e 3 ativarem o modo e não caírem no ajuste de horário)
+        - modo soneca implementado
+				- começo da implementação de um código mais organizado
+
+# **Semana 16/07/2018 - 22/07/2018**
+
+###		- Planejamentos:
+				- corrigir os bugs da versão organizada do código
+
+###		- Realizados:

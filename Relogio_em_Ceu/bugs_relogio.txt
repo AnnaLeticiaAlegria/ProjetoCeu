@@ -1,7 +1,6 @@
 Bugs:
 
-	- Modo de rodas as horas do relógio não está funcionando: display fica travado no último dígito
-	- Modo de ligar e desligar o alarme não está funcionando: alarmeOn não é trocada e os outros botões param de funcionar
+	- Função ModoHora não funciona -> para reproduzir o bug: comentar o spawn Display da IncHorario e descomentar a função ModoHora e sua chamada no loop principal e comentar a chamada da IncHorario e do ModoOnOff
     - Para o alarme tocar: funciona se começar a variável alarmeOn no true. Se ela começar no false e pressionar o botão 2 para que ela vire true, não funciona (não entra no if)
     - Para ativar o modo soneca, é preciso pressionar os botões 1 e 3 por 2 segundos. Porém, fazer isso ativa o ajuste de horário ou o ajuste de alarme. Daria para resolver com uma variável global, mas pensar em uma solução mais bonita
 
@@ -17,3 +16,6 @@ Resolvidos:
     - no arquivo: testaAumentaHora.ceu --> aumentar as horas funciona na primeira vez. Após apertar pela segunda vez algum botão, LED pisca 23 vezes
                                        --> sem a parte de piscar LED do par/or, aumentar as horas funciona para todas as vezes, portanto que não pressione o botão por muito tempo ou com um intervalo pequeno após o ultimo botão ter sido pressionado
                                        --> diminuir as horas não funciona (a hora é diminuida na primeira vez mas logo em seguida trava (led pisca 23 vezes)
+	- Modo de rodar as horas do relógio não está funcionando: display fica travado no último dígito
+	- Modo de ligar e desligar o alarme não está funcionando: alarmeOn não é trocada e os outros botões param de funcionar
+
