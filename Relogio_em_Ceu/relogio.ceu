@@ -68,17 +68,17 @@ code/await Display (var&[4] int v) -> NEVER do
 end
 
 code/await Segurou_botao (var int botao) -> none do
-	var int pin;
+  var int pin;
   var bool v;
   loop do
 	  (pin,v) = await PIN_ until pin==botao and v==false;
     par/or do
-	    (pin,v) = await PIN_ until pin!=botao or v==true;
+	    (pin,v) = await PIN_ until pin==botao and v==true;
     with
       await 2s;
       break;
     end
-	end
+  end
 end
 
 code/call AumentaHora (var&[4] int vHorario) -> none do
@@ -149,7 +149,11 @@ code/await IncHorario (none) -> NEVER do
 	spawn Display(&outer.horario);
 #endif
 	loop do
+#ifdef Teste
 		await 15s; //espera 1min antes de incrementar o horário
+#else
+        await 1min;
+#endif
 		call AumentaMinuto(&outer.horario);
 	end
 end
@@ -278,14 +282,14 @@ loop do
 		spawn AlarmTimeOut();
 #endif
 		par do
-	    await Segurou_botao(_A1);
-      escape 1;
-    with
-      await Segurou_botao(_A2);
-      escape 2;
-    with
-			await Segurou_botao(_A3); 
-      escape 3;
+          await Segurou_botao(_A1);
+          escape 1;
+        with
+          await Segurou_botao(_A2);
+          escape 2;
+        with
+          await Segurou_botao(_A3); 
+          escape 3;
 		end
 	end;
 
@@ -293,11 +297,11 @@ loop do
 		await Timeout();
 	with
 		if identificarAcao == 1 then
-			await ModoAjuste (&horario,13,12,11);
+          await ModoAjuste (&horario,13,12,11);
 		else/if identificarAcao == 2 then
-			await ModoOnOff();
+          await ModoOnOff();
 		else
-	   	await ModoAjuste (&alarme,11,13,12);
+          await ModoAjuste (&alarme,11,13,12);
 		end
 	end
 end

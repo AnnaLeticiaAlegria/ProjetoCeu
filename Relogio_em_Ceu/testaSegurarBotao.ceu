@@ -1,0 +1,91 @@
+#include "gpio.ceu"
+
+output bool PIN_13; /*LED1*/
+output bool PIN_12; /*LED2*/
+output bool PIN_11; /*LED3*/
+output bool PIN_10; /*LED4*/
+
+
+//para os LEDs começarem apagados
+emit PIN_10(true);
+emit PIN_11(true);
+emit PIN_12(true);
+emit PIN_13(true);
+
+input (int,bool) PIN_;
+code/await Pin_ (var int pin) -> NEVER do
+	{ pinMode(@pin, INPUT); }
+	var bool v1 = _digitalRead(pin) as bool;
+	loop do
+		await 50ms;
+		var bool v2 = _digitalRead(pin) as bool;
+		if v1 != v2 then
+			v1 = v2;
+      await async (pin,v1) do
+	      emit PIN_(pin,v1);
+      end
+    end
+	end
+end
+
+spawn Pin_(_A1);
+spawn Pin_(_A2);
+spawn Pin_(_A3);
+
+code/await Segurou_botao (var int botao) -> int do
+	var int pin;
+  var bool v;
+  loop do
+	  (pin,v) = await PIN_ until pin==botao and v==false;
+    par/or do
+	    (pin,v) = await PIN_ until pin==botao and v==true;
+    with
+      await 2s;
+      break;
+    end
+  end
+  (pin,v) = await PIN_;
+  if pin != botao then
+    escape 2;
+  else
+    escape 1;
+  end
+end
+
+code/await Pisca (var int pin) -> NEVER do
+	loop do
+		emit PIN (pin,true);
+		await 1s;
+    emit PIN (pin,false);
+    await 1s;
+	end
+end
+
+var int identificarAcao;
+var int numBotoes = 0;
+loop do
+    par do
+      par/and do
+        await Segurou_botao(_A1);
+      with
+        await Segurou_botao(_A3);
+      end
+      await Pisca(13);
+    with
+      numBotoes = await Segurou_botao(_A1);
+      if numBotoes == 1 then
+        await Pisca(12);
+      end
+    with
+      numBotoes = await Segurou_botao(_A2);
+      if numBotoes == 1 then
+        await Pisca(11);
+      end
+    with
+      numBotoes = await Segurou_botao(_A3);
+      if numBotoes == 1 then
+        await Pisca(10);
+      end   
+	end
+end
+
