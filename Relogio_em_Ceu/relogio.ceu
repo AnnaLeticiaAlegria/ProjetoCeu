@@ -1,6 +1,6 @@
 #include "gpio.ceu"
 
-//#define BugHora
+#define BugHora
 #define Teste //Modo teste ativado -> Quando chega na hora do alarme, o LED4 pisca
 							//Modo teste desativado -> Quando chega na hora do alarme, o buzzer é ativado
 
@@ -144,13 +144,9 @@ code/await Pisca (var int pin) -> NEVER do
 end
 
 code/await IncHorario (none) -> NEVER do
-#ifdef BugHora
-#else
-	spawn Display(&outer.horario);
-#endif
 	loop do
 #ifdef Teste
-		await 15s; //espera 1min antes de incrementar o horário
+		await 1s; //espera 1min antes de incrementar o horário
 #else
         await 1min;
 #endif
@@ -193,10 +189,11 @@ code/await AlarmTimeOut (none) -> NEVER do
 end
 
 #ifdef BugHora
-code/await ModoHora (none) -> none do
+code/await ModoHora (none) -> NEVER do
 	spawn Display(&outer.horario);
 	spawn IncHorario();
-	spawn AlarmTimeOut();
+	//spawn AlarmTimeOut();
+    await FOREVER;
 end
 #endif
 
@@ -278,6 +275,7 @@ loop do
 #ifdef BugHora
 		spawn ModoHora();
 #else
+        spawn Display(&horario);
 		spawn IncHorario();
 		spawn AlarmTimeOut();
 #endif

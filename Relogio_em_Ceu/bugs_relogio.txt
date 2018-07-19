@@ -2,6 +2,7 @@ Bugs:
 
 	- Função ModoHora não funciona -> para reproduzir o bug: descomentar a linha 2 (#define BugHora)
     - Modo soneca não está sendo ativado --> problema ao tentar segurar os dois botões ao mesmo tempo, se fizer pressionando, funciona
+        - TestaSeguraBotao --> consertar caso de segurar dois botões ao mesmo tempo (ainda está ativando os botões individualmente). Caso de apertar cada um separadamente foi resolvido e não está ativando o caso de apertar os dois juntos
 
 Resolvidos:
 

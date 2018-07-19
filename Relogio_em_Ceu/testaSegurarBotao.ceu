@@ -32,23 +32,55 @@ spawn Pin_(_A1);
 spawn Pin_(_A2);
 spawn Pin_(_A3);
 
-code/await Segurou_botao (var int botao) -> int do
-	var int pin;
-  var bool v;
-  loop do
-	  (pin,v) = await PIN_ until pin==botao and v==false;
-    par/or do
-	    (pin,v) = await PIN_ until pin==botao and v==true;
-    with
-      await 2s;
-      break;
-    end
-  end
-  (pin,v) = await PIN_;
-  if pin != botao then
-    escape 2;
-  else
-    escape 1;
+code/await Segurou_botao (var bool b1, var bool b2, var bool b3) -> none do
+loop do
+      var int pin=_A1;
+      var bool v=b1;
+      loop do
+          par/or do
+              await 100ms;
+          with
+              par/and do
+                  if b1 == true then
+                    (pin,v) = await PIN_ until pin==_A1 and v==false;
+                  else
+                    (pin,v) = await PIN_ until pin!=_A1;
+                  end
+              with
+                  if b2 == true then
+                    (pin,v) = await PIN_ until pin==_A2 and v==false;
+                  else
+                    (pin,v) = await PIN_ until pin!=_A2;
+                  end
+              with
+                  if b3 == true then
+                    (pin,v) = await PIN_ until pin==_A3 and v==false;
+                  else
+                    (pin,v) = await PIN_ until pin!=_A3;
+                  end
+              end
+              break;
+          end
+      end
+      
+      par/or do
+          par/and do
+              if b1==true then
+                (pin,v) = await PIN_ until pin==_A1 and v==b1;
+              end
+          with
+              if b2==true then
+                (pin,v) = await PIN_ until pin==_A2 and v==b2;
+              end
+          with
+              if b3==true then
+                (pin,v) = await PIN_ until pin==_A3 and v==b3;
+              end
+          end
+      with
+          await 2s;
+          break;
+      end
   end
 end
 
@@ -61,31 +93,19 @@ code/await Pisca (var int pin) -> NEVER do
 	end
 end
 
-var int identificarAcao;
-var int numBotoes = 0;
 loop do
     par do
-      par/and do
-        await Segurou_botao(_A1);
-      with
-        await Segurou_botao(_A3);
-      end
+     // await Segurou_botao(true,false,true);
+      await Segurou_botao(true,false,true);
       await Pisca(13);
     with
-      numBotoes = await Segurou_botao(_A1);
-      if numBotoes == 1 then
-        await Pisca(12);
-      end
+      await Segurou_botao(true,false,false);
+      await Pisca(12);
     with
-      numBotoes = await Segurou_botao(_A2);
-      if numBotoes == 1 then
-        await Pisca(11);
-      end
+      await Segurou_botao(false,true,false);
+      await Pisca(11);
     with
-      numBotoes = await Segurou_botao(_A3);
-      if numBotoes == 1 then
-        await Pisca(10);
-      end   
+      await Segurou_botao(false,false,true);
+      await Pisca(10);  
 	end
 end
-
