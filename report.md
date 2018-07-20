@@ -61,7 +61,7 @@
         - ajuste do horário do alarme funcionando
         - alarme toca
         - modo soneca implementado
-				- começo da implementação de um código mais organizado
+        - começo da implementação de um código mais organizado
 
 # **Semana 16/07/2018 - 22/07/2018**
 
@@ -72,3 +72,4 @@
 ###		- Realizados:
 				- bug de ligar/desligar alarme corrigido
 				- bug de mostrar as horas corrigido
+				- modo soneca corrigido

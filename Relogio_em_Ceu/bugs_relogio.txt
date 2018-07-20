@@ -1,8 +1,7 @@
 Bugs:
 
 	- Função ModoHora não funciona -> para reproduzir o bug: descomentar a linha 2 (#define BugHora)
-    - Modo soneca não está sendo ativado --> problema ao tentar segurar os dois botões ao mesmo tempo, se fizer pressionando, funciona
-        - TestaSeguraBotao --> consertar caso de segurar dois botões ao mesmo tempo (ainda está ativando os botões individualmente). Caso de apertar cada um separadamente foi resolvido e não está ativando o caso de apertar os dois juntos
+
 
 Resolvidos:
 
@@ -19,3 +18,5 @@ Resolvidos:
 	- Modo de ligar e desligar o alarme não está funcionando: alarmeOn não é trocada e os outros botões param de funcionar
     - Para o alarme tocar: funciona se começar a variável alarmeOn no true. Se ela começar no false e pressionar o botão 2 para que ela vire true, não funciona (não entra no if)
     - Para ativar o modo soneca, é preciso pressionar os botões 1 e 3 por 2 segundos. Porém, fazer isso ativa o ajuste de horário ou o ajuste de alarme. Daria para resolver com uma variável global, mas pensar em uma solução mais bonita
+    - Modo soneca não está sendo ativado --> problema ao tentar segurar os dois botões ao mesmo tempo, se fizer pressionando, funciona
+        - TestaSeguraBotao --> consertar caso de segurar dois botões ao mesmo tempo (ainda está ativando os botões individualmente). Caso de apertar cada um separadamente foi resolvido e não está ativando o caso de apertar os dois juntos
