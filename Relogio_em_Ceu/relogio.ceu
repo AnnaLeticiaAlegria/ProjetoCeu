@@ -18,11 +18,6 @@ output bool PIN_08; //DATA_DIO
 native _shiftOut;
 native _MSBFIRST;
 
-// Segment byte maps for numbers 0 to 9 
-var[10] byte segment_map = [ 0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90 ];
-// Byte maps to select digit 1 to 4 
-var[4] byte segment_select = [ 0xF1, 0xF2, 0xF4, 0xF8 ];
-
 //para os LEDs começarem apagados
 emit PIN_10(true);
 emit PIN_11(true);
@@ -55,12 +50,16 @@ spawn Pin_(_A2);
 spawn Pin_(_A3);
 
 code/await Display (var&[4] int v) -> NEVER do
+    // Segment byte maps for numbers 0 to 9 
+    var[10] byte segment_map = [ 0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90 ];
+    // Byte maps to select digit 1 to 4 
+    var[4] byte segment_select = [ 0xF1, 0xF2, 0xF4, 0xF8 ];
 	loop do
 		var int i;
 		loop i in [0 -> 4[ do
     	emit PIN_04(false);
-      _shiftOut ( 8, 7, _MSBFIRST, outer.segment_map[v[i]] );
-      _shiftOut ( 8, 7, _MSBFIRST, outer.segment_select[i] );
+      _shiftOut ( 8, 7, _MSBFIRST, segment_map[v[i]] );
+      _shiftOut ( 8, 7, _MSBFIRST, segment_select[i] );
       emit PIN_04(true);
     end
     await async do end;
@@ -169,7 +168,7 @@ code/await AlarmTimeOut (none) -> NEVER do
 #endif
         end
       with
-				par/and do
+        par/and do
          	await Segurou_botao(_A1);
         with
          	await Segurou_botao(_A3);
@@ -192,7 +191,7 @@ end
 code/await ModoHora (none) -> NEVER do
 	spawn Display(&outer.horario);
 	spawn IncHorario();
-	//spawn AlarmTimeOut();
+	spawn AlarmTimeOut();
     await FOREVER;
 end
 #endif
