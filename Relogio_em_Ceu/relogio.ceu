@@ -1,7 +1,7 @@
 #include "gpio.ceu"
 
 //#define BugHora
-#define Teste //Modo teste ativado -> Quando chega na hora do alarme, o LED4 pisca
+//#define Teste //Modo teste ativado -> Quando chega na hora do alarme, o LED4 pisca
 							//Modo teste desativado -> Quando chega na hora do alarme, o buzzer é ativado
 
 output bool PIN_03; //BUZZER
@@ -25,7 +25,7 @@ emit PIN_12(true);
 emit PIN_13(true);
 emit PIN_03(true);
 
-var[4] int horario = [ 2,3,5,9 ];
+var[4] int horario = [ 0,0,0,0 ];
 var[4] int alarme = [ 0,0,0,0 ];
 var bool alarmeOn = false;
 
