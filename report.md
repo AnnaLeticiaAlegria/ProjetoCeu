@@ -73,3 +73,11 @@
 				- bug de ligar/desligar alarme corrigido
 				- bug de mostrar as horas corrigido
 				- modo soneca corrigido
+
+# **Semana 23/07/2018 - 29/07/2018**
+
+###   - Planejamentos:
+        - corrigir bug da função do relógio
+				- fazer a comunicação serial entre o programa em Lua e o programa em ceu
+    
+###   - Realizados:
