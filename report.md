@@ -65,19 +65,32 @@
 
 # **Semana 16/07/2018 - 22/07/2018**
 
-###		- Planejamentos:
-				- corrigir os bugs da versão organizada do código
-				- ajustar o modo soneca				
+###   - Planejamentos:
+        - corrigir os bugs da versão organizada do código
+        - ajustar o modo soneca				
 
-###		- Realizados:
-				- bug de ligar/desligar alarme corrigido
-				- bug de mostrar as horas corrigido
-				- modo soneca corrigido
+###   - Realizados:
+        - bug de ligar/desligar alarme corrigido
+        - bug de mostrar as horas corrigido
+        - modo soneca corrigido
 
 # **Semana 23/07/2018 - 29/07/2018**
 
 ###   - Planejamentos:
         - corrigir bug da função do relógio
-				- fazer a comunicação serial entre o programa em Lua e o programa em ceu
+        - fazer a comunicação serial entre o programa em Lua e o programa em ceu
     
 ###   - Realizados:
+        - nova função de segurar o botão
+        - testes em pico-ceu para o jogo GuitarHero
+        
+# **Semana 30/07/2018 - 05/08/2018**
+
+###   - Planejamentos:
+        - começar o jogo GuitarHero:
+          - colocar as imagens em bmp
+          - fazer a música tocar no momento certo
+          - fazer as notas caírem no tempo certo
+        
+###   - Realizados:
+        

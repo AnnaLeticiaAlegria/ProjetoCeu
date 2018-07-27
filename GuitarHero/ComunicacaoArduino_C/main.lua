@@ -8,17 +8,20 @@ local function toggle ()
 end
 
 function love.load() -- (Arduino/Genuino Mega or Mega 2560)
-  leit = io.open("/dev/cu.usbmodem1421","r")
-  esc = io.open("/dev/cu.usbmodem1421","w")
+  print("Antes open")
+  leit = io.open("/dev/ttyACM0","r+")
+  print("depois open")
+  print("Antes")
+  a = assert(leit:read(1))
+  print(a, "Depois")
+--  esc = io.open("/dev/ttyACM0","w")
   baleia = love.graphics.newImage("whale.png")
-  love.window.setMode(W,H)
-  love.graphics.setBackgroundColor (1, 1, 0)
+  love.graphics.setBackgroundColor (0, 0, 0)
 end
 
 function love.update(dt)
-  a = leit:read(1)
-  print(a)
-  if a=='1' then toggle() end
+
+--  if a=='1' then toggle() end
 end
 
 function love.draw()
@@ -28,5 +31,5 @@ function love.draw()
 end
 
 function love.keypressed (k)
-  if k  == "return" then esc:write("1\n") end
+--  if k  == "return" then esc:write("1\n") end
 end

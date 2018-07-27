@@ -1,0 +1,46 @@
+
+emit WINDOW_CLEAR();
+emit WINDOW_SET_TITLE("GuitarHero");
+emit WINDOW_SET_CLEAR_COLOR_RGB(0,0,0);
+emit WINDOW_SET_GRID(no);
+
+await 1s;
+
+par do
+  loop do
+    // desenhando as barras de vida e de progresso
+
+    var integer i;
+    loop i in [-15 -> 15] do
+      emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
+      emit GRAPHICS_DRAW_PIXEL(i,20);
+      emit GRAPHICS_DRAW_PIXEL(i,19);
+      emit GRAPHICS_DRAW_PIXEL(i,17);
+      await 10ms;
+    end
+
+
+    // desenhando as bases (substituir por imagem bmp)
+
+    par/and do
+      emit GRAPHICS_SET_COLOR_RGB(0XFF,0,0);
+      emit GRAPHICS_DRAW_RECT(-12,-15,5,5);
+    with
+      emit GRAPHICS_SET_COLOR_RGB(0,0XFF,0);
+      emit GRAPHICS_DRAW_RECT(0,-15,5,5);
+    with
+      emit GRAPHICS_SET_COLOR_RGB(0,0,0XFF);
+      emit GRAPHICS_DRAW_RECT(12,-15,5,5);
+    end
+  end
+with  
+// testando nota caindo
+
+  var integer i;
+  loop i in [0 -> 43] do
+    emit GRAPHICS_SET_COLOR_RGB(0xFF,0,0);
+    emit GRAPHICS_DRAW_RECT(-12,14-i,5,5);
+    emit WINDOW_CLEAR();
+    await 100ms;
+  end
+end
