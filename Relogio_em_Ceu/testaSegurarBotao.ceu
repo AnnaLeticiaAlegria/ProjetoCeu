@@ -97,6 +97,30 @@ code/await Segurou_botao (var bool b1, var bool b2, var bool b3) -> none do
 end
 
 
+#if 0
+code/await Segurou_botao_1 (var int n) do
+    loop do
+        a1 = _digitalRead(_A1);
+        a2 = ;
+        a3 = ;
+        par/or do
+            if a1 and a2 and a3 then
+                (p,_) = await PIN_ until (p == n);
+                ;
+                break;
+            else
+                await FOREVER;
+            end
+        with
+            ...
+        with
+            var int p;
+            (p,_) = await PIN_ until (p != n);
+        end
+    end
+end
+#endif
+
 
 code/await Segurou_botao2 (var bool b1, var bool b2, var bool b3) -> none do
 	var int pin1=_A1;
@@ -181,7 +205,124 @@ code/await Segurou_botao2 (var bool b1, var bool b2, var bool b3) -> none do
 	end
 end
 
+code/await Segurou_botao3 (var bool b1, var bool b2, var bool b3) -> none do
+	var int pin1=_A1;
+	var int pin2=_A2;
+	var int pin3=_A3;
+	var bool v1= not b1;
+	var bool v2= not b2;
+	var bool v3= not b3;
+	loop do
+		loop do
+			var bool a1 = _digitalRead(_A1);
+			var bool a2 = _digitalRead(_A2);
+			var bool a3 = _digitalRead(_A3);	
+			if a1 and a2 and a3 then
+				(pin1,v1) = await PIN_;
+				if (pin1==_A1 and v1!=b1) or (pin1==_A2 and v1!=b2) or (pin1==_A3 and v1!=b3) then
+				//	par/or do
+					//	await 100ms;
+					//with
+						//(pin2,v2) = await PIN_ until pin2!=pin1 and v2==false;
+					//end
+					//if (pin2 == _A1 and v2!=b1) or (pin2 == _A2 and v2!=b2) or (pin2 == _A3 and v2!=b3) then
+						break;
+					//end
+				end
+			end
+		end
+		
+		par/or do
+			par/and do
+				if b1==true then
+					(pin1,v1) = await PIN_ until pin1==_A1 and v1==b1;
+				end
+			with
+				if b2==true then
+					(pin2,v2) = await PIN_ until pin2==_A2 and v2==b2;
+				end
+			with
+				if b3==true then
+					(pin3,v3) = await PIN_ until pin3==_A3 and v3==b3;
+				end
+			end
+		with
+			await 2s;
+			break;
+		end
+	end
+end
 
+code/await Segurou_botao4 (var bool b1, var bool b2, var bool b3) -> none do
+	loop do
+		loop do
+			par/or do
+				await 100ms;
+			with
+				var bool a1 = _digitalRead(_A1);
+				var bool a2 = _digitalRead(_A2);
+				var bool a3 = _digitalRead(_A3);	
+				par/and do
+					if b1 == true then
+						var int pin;
+						var bool v;
+						(pin,v) = await PIN_ until pin==_A1 and v==false;
+					else
+						if a1 == false then
+							await 10s;
+						end
+					end
+				with
+					if b2 == true then
+						var int pin;
+						var bool v;
+						(pin,v) = await PIN_ until pin==_A2 and v==false;
+					else
+						if a2 == false then
+							await 10s;
+						end
+					end
+				with
+					if b3 == true then
+						var int pin;
+						var bool v;
+						(pin,v) = await PIN_ until pin==_A3 and v==false;
+					else
+						if a3 == false then
+							await 10s;
+						end
+					end
+				end
+				break;
+			end
+		end
+
+		par/or do
+			par/and do
+				if b1==true then
+					var int pin;
+					var bool v;
+					(pin,v) = await PIN_ until pin==_A1 and v==b1;
+				end
+			with
+				if b2==true then
+					var int pin;
+					var bool v;
+					(pin,v) = await PIN_ until pin==_A2 and v==b2;
+				end
+			with
+				if b3==true then
+					var int pin;
+					var bool v;
+					(pin,v) = await PIN_ until pin==_A3 and v==b3;
+				end
+			end
+		with
+			await 2s;
+			break;
+		end
+  end
+end
 
 code/await Pisca (var int pin) -> NEVER do
 	loop do
@@ -194,16 +335,16 @@ end
 
 loop do
 	par do
-		await Segurou_botao2(true,false,true);
+		await Segurou_botao4(true,false,true);
 		await Pisca(13);
 	with
-		await Segurou_botao2(true,false,false);
+		await Segurou_botao4(true,false,false);
 		await Pisca(12);
 	with
-		await Segurou_botao2(false,true,false);
+		await Segurou_botao4(false,true,false);
 		await Pisca(11);
 	with
-		await Segurou_botao2(false,false,true);
+		await Segurou_botao4(false,false,true);
 		await Pisca(10);  
 	end
 end
