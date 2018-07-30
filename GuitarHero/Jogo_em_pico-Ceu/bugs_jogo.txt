@@ -1,0 +1,5 @@
+Bugs:
+
+    - ao escrever um texto numa linha, ele dá CLEAR_WINDOW e só exibe a linha de baixo (na parte do PRESS ENTER TO START)
+    - code/await não está indo (na função de desenhar a barra de progresso)
+    - os objetos não estão sendo desenhados de forma contínua

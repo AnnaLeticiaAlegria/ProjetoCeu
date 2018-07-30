@@ -93,4 +93,4 @@
           - fazer as notas caírem no tempo certo
         
 ###   - Realizados:
-        
+        - barra de progresso do jogo pronta

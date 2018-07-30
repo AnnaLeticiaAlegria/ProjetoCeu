@@ -6,6 +6,8 @@ emit WINDOW_SET_GRID(no);
 
 await 1s;
 
+emit SOUND_PLAY("/home/annaleticia/ProjetoCeu/GuitarHero/Jogo_em_pico-Ceu/NoGameNoLife-INSTRUMENTAL.mp3");
+
 par do
   loop do
     // desenhando as barras de vida e de progresso
@@ -34,6 +36,7 @@ par do
     end
   end
 with  
+
 // testando nota caindo
 
   var integer i;
@@ -43,4 +46,10 @@ with
     emit WINDOW_CLEAR();
     await 100ms;
   end
+with
+
+//testando input
+
+  var integer key = await KEY_PRESS until key==13; //apertar o enter
+  emit WINDOW_SET_CLEAR_COLOR_RGB(0,0xFF,0);
 end
