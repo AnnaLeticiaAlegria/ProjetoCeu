@@ -1,5 +1,6 @@
 Bugs:
 
     - ao escrever um texto numa linha, ele dá CLEAR_WINDOW e só exibe a linha de baixo (na parte do PRESS ENTER TO START)
-    - code/await não está indo (na função de desenhar a barra de progresso)
+    - code/await não está indo (na função de desenhar a barra de progresso) --> ver no codigo do snake os outros parametros necessarios para ela funcionar
     - os objetos não estão sendo desenhados de forma contínua
+    - música não está tocando --> ver se o problema é ela estar em mp3
