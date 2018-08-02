@@ -96,4 +96,5 @@
         - barra de progresso do jogo pronta
         - notas caindo mas ainda não estão no tempo certo --> tem que carregar os tempos das notas no programa
         - música não está tocando --> checar se o problema é ela ser mp3
-        - protótipo quase pronto --> organizar melhor em funções e deixar o loop principal mais claro (se basear no código do jogo snake.ceu --> ver funções como FRAMES_REDRAW)
+        - protótipo quase pronto
+        - código organizado em funções e loop principal mais claro

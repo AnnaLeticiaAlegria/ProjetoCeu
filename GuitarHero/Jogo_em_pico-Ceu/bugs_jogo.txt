@@ -1,6 +1,11 @@
 Bugs:
 
-    - ao escrever um texto numa linha, ele dá CLEAR_WINDOW e só exibe a linha de baixo (na parte do PRESS ENTER TO START)
-    - code/await não está indo (na função de desenhar a barra de progresso) --> ver no codigo do snake os outros parametros necessarios para ela funcionar
-    - os objetos não estão sendo desenhados de forma contínua
+    - os objetos não estão sendo desenhados de forma contínua --> ver como funciona a parte de Frames Management
     - música não está tocando --> ver se o problema é ela estar em mp3
+    - fazer par do com o every FRAMES_REDRAW trava
+    - notas não estão mais caindo (caem no arquivo main_old.ceu)
+    
+Resolvidos:
+
+    - code/await não está indo (na função de desenhar a barra de progresso) --> ver no codigo do snake os outros parametros necessarios para ela funcionar
+    - ao escrever um texto numa linha, ele dá CLEAR_WINDOW e só exibe a linha de baixo (na parte do PRESS ENTER TO START)

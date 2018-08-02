@@ -1,0 +1,126 @@
+
+#if 0
+code/await desenha_progresso (none) -> none do
+  var integer i;
+  var integer j=-1;
+  loop do
+    loop i in [-15 -> 15] do
+      emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
+      emit GRAPHICS_DRAW_PIXEL(i,20);
+      emit GRAPHICS_DRAW_PIXEL(i,19);
+      await 10ms;
+    end
+    loop i in [0 -> j] do
+      emit GRAPHICS_SET_COLOR_NAME(COLOR_GREEN);
+      emit GRAPHICS_DRAW_PIXEL(i - 15,20);
+      emit GRAPHICS_DRAW_PIXEL(i - 15,19);
+      await 10ms;
+    end
+    await 3s;
+    j = j + 1;
+    if j > 30 then
+      break;
+    end
+  end
+end
+#endif
+
+// esses vetores seriam carregados por um arquivo
+var[6] int tipoNota = [ 0,1,2,1,2,0 ];
+var[6] int tempoNota = [ 0,2,1,3,4,2 ];
+
+emit WINDOW_CLEAR();
+emit WINDOW_SET_TITLE("GuitarHero");
+emit WINDOW_SET_CLEAR_COLOR_RGB(0,0,0);
+emit WINDOW_SET_GRID(no);
+
+await 1s;
+
+emit GRAPHICS_SET_FONT("tiny.ttf", 8);
+emit GRAPHICS_DRAW_TEXT(0,10,"PRESS ENTER");
+emit GRAPHICS_DRAW_TEXT(0,-10,"TO START");
+
+var integer key = await KEY_PRESS until key==13; //começa o jogo após apertar o enter
+        
+emit SOUND_SET_VOLUME(100);
+emit SOUND_PLAY("/home/annaleticia/ProjetoCeu/GuitarHero/Jogo_em_pico-Ceu/NoGameNoLife-INSTRUMENTAL.mp3");
+//spawn desenha_progresso ();
+
+var integer points=0;
+
+par do
+  //barra de progresso
+  var integer i;
+  var integer j=-1;
+  loop do
+    loop i in [-15 -> 15] do
+      emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
+      emit GRAPHICS_DRAW_PIXEL(i,20);
+      emit GRAPHICS_DRAW_PIXEL(i,19);
+      await 10ms;
+    end
+    loop i in [0 -> j] do
+      emit GRAPHICS_SET_COLOR_NAME(COLOR_GREEN);
+      emit GRAPHICS_DRAW_PIXEL(i - 15,20);
+      emit GRAPHICS_DRAW_PIXEL(i - 15,19);
+      await 10ms;
+    end
+    await 3s;
+    j = j + 1;
+    if j > 30 then
+      break;
+    end
+  end
+
+with
+  loop do
+    // desenhando as barras de pontos
+
+    var integer i;
+    loop i in [-15 -> 15] do
+      emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
+      emit GRAPHICS_DRAW_PIXEL(i,17);
+      await 10ms;
+    end
+
+
+    // desenhando as bases (substituir por imagem bmp)
+
+    par/and do
+      emit GRAPHICS_SET_COLOR_RGB(0XFF,0,0);
+      emit GRAPHICS_DRAW_RECT(-12,-15,5,5);
+    with
+      emit GRAPHICS_SET_COLOR_RGB(0,0XFF,0);
+      emit GRAPHICS_DRAW_RECT(0,-15,5,5);
+    with
+      emit GRAPHICS_SET_COLOR_RGB(0,0,0XFF);
+      emit GRAPHICS_DRAW_RECT(12,-15,5,5);
+    end
+  end
+with  
+
+  //emitir as notas e reconhecer resposta do jogador
+  var integer j;
+  loop j in [0 -> 6[ do
+
+    var integer i;
+    loop i in [0 -> 43] do
+      if tipoNota[j] == 0 then
+        emit GRAPHICS_SET_COLOR_RGB(0xFF,0,0);
+        emit GRAPHICS_DRAW_RECT(-12,14-i,5,5);
+      else/if tipoNota[j] == 1 then
+        emit GRAPHICS_SET_COLOR_RGB(0,0xFF,0);
+        emit GRAPHICS_DRAW_RECT(0,14-i,5,5);
+      else
+        emit GRAPHICS_SET_COLOR_RGB(0,0,0xFF);
+        emit GRAPHICS_DRAW_RECT(12,14-i,5,5);
+      end
+      await 1s;
+      emit WINDOW_CLEAR();
+    end
+    await 1s; //ver se tem como dar await numa variável --> await tempoNota[j];
+  end
+  emit WINDOW_CLEAR();
+  
+  
+end
