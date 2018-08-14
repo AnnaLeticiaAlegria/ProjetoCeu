@@ -48,11 +48,11 @@ code/await PointsBar (none) -> (event none grow) -> NEVER do
   with
     every FRAMES_REDRAW do
       var integer i;
-      loop i in ]j-15 -> 15] do
+      loop i in [j-15 -> 15] do
         emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
         emit GRAPHICS_DRAW_PIXEL(i,17);
       end
-      loop i in [0 -> j] do
+      loop i in [0 -> j[ do
         emit GRAPHICS_SET_COLOR_NAME(COLOR_RED);
         emit GRAPHICS_DRAW_PIXEL(i - 15,17);
       end
@@ -62,41 +62,67 @@ end
 
 code/await NoteBase (var integer num) -> (event none grow) -> none do
 
-  if num == 1 then
-    emit GRAPHICS_SET_COLOR_RGB(0XFF,0,0);
-    emit GRAPHICS_DRAW_RECT(-12,-15,5,5);
-  else/if num == 2 then
-    emit GRAPHICS_SET_COLOR_RGB(0,0XFF,0);
-    emit GRAPHICS_DRAW_RECT(0,-15,5,5);
-  else
-    emit GRAPHICS_SET_COLOR_RGB(0,0,0XFF);
-    emit GRAPHICS_DRAW_RECT(12,-15,5,5);
+  every FRAMES_REDRAW do
+    if num == 1 then
+      emit GRAPHICS_SET_COLOR_RGB(0XFF,0,0);
+      emit GRAPHICS_DRAW_RECT(-12,-15,5,5);
+    else/if num == 2 then
+      emit GRAPHICS_SET_COLOR_RGB(0,0XFF,0);
+      emit GRAPHICS_DRAW_RECT(0,-15,5,5);
+    else
+      emit GRAPHICS_SET_COLOR_RGB(0,0,0XFF);
+      emit GRAPHICS_DRAW_RECT(12,-15,5,5);
+    end
   end
-
 end
 
 code/await Note (var integer num) -> (event none grow) -> none do
-
-
-  var integer i;
-  loop i in [0 -> 43] do // distancia no eixo y que a nota vai percorrer
+  var integer j = 0;
+  par do
+    var integer i;
+    loop i in [0 -> 43] do
+      await 1s;
+      j = i;
+    end// distancia no eixo y que a nota vai percorrer
+  with
+    var integer keycode;
     if num == 1 then
-      emit GRAPHICS_SET_COLOR_RGB(0xFF,0,0);
-      emit GRAPHICS_DRAW_RECT(-12,14-i,5,5);
+      keycode = 97; //a
     else/if num == 2 then
-      emit GRAPHICS_SET_COLOR_RGB(0,0xFF,0);
-      emit GRAPHICS_DRAW_RECT(0,14-i,5,5);
+      keycode = 115;  //s
     else
-      emit GRAPHICS_SET_COLOR_RGB(0,0,0xFF);
-      emit GRAPHICS_DRAW_RECT(12,14-i,5,5);
+      keycode = 100;  //d
     end
-    await 1s;
- //   emit WINDOW_CLEAR();
+    var integer key = await KEY_PRESS until key==keycode;
+    
+    if ( (j-5) <= -15 and j >= -15 ) or ( (j-5) <= -20 and j >= -20 ) then
+    
+      outer.points = outer.points + 30;
+    else
+      if outer.points >= 5 then
+        outer.points = -5;
+      else 
+        outer.points = 0;
+      end
+    end
+  with
+    every FRAMES_REDRAW do
+      if num == 1 then
+        emit GRAPHICS_SET_COLOR_RGB(0xFF,0,0);
+        emit GRAPHICS_DRAW_RECT(-12,14-j,5,5);
+      else/if num == 2 then
+        emit GRAPHICS_SET_COLOR_RGB(0,0xFF,0);
+        emit GRAPHICS_DRAW_RECT(0,14-j,5,5);
+      else
+        emit GRAPHICS_SET_COLOR_RGB(0,0,0xFF);
+        emit GRAPHICS_DRAW_RECT(12,14-j,5,5);
+      end
+    end
   end
-
 end
 
-//emit FRAMES_SET(no);
+
+emit FRAMES_SET(no);
 emit WINDOW_CLEAR();
 emit GRAPHICS_SET_FONT("tiny.ttf", 8);
 emit GRAPHICS_DRAW_TEXT(0,10,"PRESS ENTER");
@@ -104,7 +130,9 @@ await 1s;
 emit GRAPHICS_DRAW_TEXT(0,-10,"TO START");
   
 var integer key = await KEY_PRESS until key==13; //começa o jogo após apertar o enter
-//emit FRAMES_SET(yes);
+await 1s;
+
+emit FRAMES_SET(yes);
 
 emit SOUND_SET_VOLUME(100);
 emit SOUND_PLAY("/home/annaleticia/ProjetoCeu/GuitarHero/Jogo_em_pico-Ceu/NoGameNoLife-INSTRUMENTAL.mp3");
@@ -116,13 +144,21 @@ spawn NoteBase(1);
 spawn NoteBase(2);
 spawn NoteBase(3);
 
+
+#if 1
+  spawn Note(1);
+
+  await 50s;
+  
+#else
 loop do
   //points = points + 20;
-  
+
   var integer j;
-  loop j in [0 -> 6[ do
+  loop j in [0 -> 6[ do //as notas nao caem pq quando o loop acaba (ou passa pra próxima iteração, o spawn morre
     spawn Note(noteType[j]);
-    await 1s; //seria o await noteTime[j];
+    await 2s; //seria o await noteTime[j];
   end
   await 100ms;
 end
+#endif
