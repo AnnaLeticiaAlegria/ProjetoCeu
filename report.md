@@ -98,3 +98,13 @@
         - música não está tocando --> checar se o problema é ela ser mp3
         - protótipo quase pronto
         - código organizado em funções e loop principal mais claro
+
+# **Semana 13/08/2018 - 19/08/2018**
+
+###   - Planejamentos:
+        - colocar as imagens em bmp
+        - fazer a música tocar
+        - fazer as notas caírem no tempo certo
+        
+###   - Realizados: 
+        - barras de progresso e de pontos consertadas
