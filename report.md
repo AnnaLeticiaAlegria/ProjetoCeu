@@ -109,4 +109,4 @@
 ###   - Realizados: 
         - barras de progresso e de pontos consertadas
         - notas que não estão dentro de um loop estão caindo
-        - começo da implementação do usuário apertar a tecla da nota
+        - começo da implementação do usuário apertar a tecla da nota --> falta acrescentar a diferença de pontuação

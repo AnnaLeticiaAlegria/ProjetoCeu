@@ -3,7 +3,7 @@ emit WINDOW_SET_SIZE(600,600,60,60);
 emit WINDOW_SET_CLEAR_COLOR_RGB(0,0,0);
 emit WINDOW_SET_GRID(no);
 var integer points=0;
-var[6] int noteType = [ 3,1,2,1,2,3 ];
+var[6] int noteType = [ 3,1,2,1,2,2 ];
 var[6] int noteTime = [ 0,2,1,3,4,2 ];
 
 code/await  ProgressBar (none) -> (event none grow) -> none do
@@ -78,29 +78,28 @@ end
 
 code/await Note (var integer num) -> (event none grow) -> none do
   var integer j = 0;
-  par do
+  par/or do
     var integer i;
-    loop i in [0 -> 43] do
-      await 1s;
+    loop i in [0 -> 48] do
+      await 50ms;
       j = i;
     end// distancia no eixo y que a nota vai percorrer
   with
     var integer keycode;
     if num == 1 then
-      keycode = 97; //a
+      keycode = 97;   //a
     else/if num == 2 then
       keycode = 115;  //s
     else
       keycode = 100;  //d
     end
     var integer key = await KEY_PRESS until key==keycode;
-    
-    if ( (j-5) <= -15 and j >= -15 ) or ( (j-5) <= -20 and j >= -20 ) then
-    
-      outer.points = outer.points + 30;
+
+    if (13-j) < -10 and (13-j) > -25 then
+      outer.points = outer.points + 20;
     else
       if outer.points >= 5 then
-        outer.points = -5;
+        outer.points = outer.points - 5;
       else 
         outer.points = 0;
       end
@@ -145,7 +144,7 @@ spawn NoteBase(2);
 spawn NoteBase(3);
 
 
-#if 1
+#if 0
   spawn Note(1);
 
   await 50s;
@@ -156,8 +155,9 @@ loop do
 
   var integer j;
   loop j in [0 -> 6[ do //as notas nao caem pq quando o loop acaba (ou passa pra próxima iteração, o spawn morre
-    spawn Note(noteType[j]);
-    await 2s; //seria o await noteTime[j];
+    //spawn Note(noteType[j]);
+    await Note(noteType[j]);
+    await 1s; //seria o await noteTime[j];
   end
   await 100ms;
 end
