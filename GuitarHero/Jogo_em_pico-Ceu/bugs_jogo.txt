@@ -1,8 +1,7 @@
 Bugs:
 
     - música não está tocando --> ver se o problema é ela estar em mp3
-    - notas não estão mais caindo (caem no arquivo main_old.ceu) --> as notas não caem porque quando o loop acaba (ou passa pra próxima iteração) o spawn morre
-      --> notas caindo de forma sequencial mas uma só cai quando a outra some (porque está com await e não com spawn)
+    - consertar barras
     
 Resolvidos:
 
@@ -10,3 +9,5 @@ Resolvidos:
     - ao escrever um texto numa linha, ele dá CLEAR_WINDOW e só exibe a linha de baixo (na parte do PRESS ENTER TO START)
     - fazer par do com o every FRAMES_REDRAW trava
     - os objetos não estão sendo desenhados de forma contínua --> ver como funciona a parte de Frames Management
+    - notas não estão mais caindo (caem no arquivo main_old.ceu) --> as notas não caem porque quando o loop acaba (ou passa pra próxima iteração) o spawn morre
+      --> notas caindo de forma sequencial mas uma só cai quando a outra some (porque está com await e não com spawn)
