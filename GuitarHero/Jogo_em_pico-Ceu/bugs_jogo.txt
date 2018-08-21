@@ -1,7 +1,9 @@
-Bugs:
+Bugs/Tarefas:
 
     - música não está tocando --> ver se o problema é ela estar em mp3
-    - consertar barras
+    - consertar barras --> elas não estão aparecendo mais
+    - ajustar a velocidade que as notas caem
+    - ajustar sistema de pontos --> dividir mais na hora de preencher a barra e fazer diferença de pontuação
     
 Resolvidos:
 

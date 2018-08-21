@@ -110,3 +110,15 @@
         - barras de progresso e de pontos consertadas
         - notas estão caindo no tempo certo
         - implementação do usuário apertar a tecla da nota --> falta acrescentar a diferença de pontuação
+
+# **Semana 20/08/2018 - 26/08/2018**
+
+###   - Planejamentos:
+        - colocar as imagens em bmp
+        - fazer a música tocar
+        - ajustar tempo das notas
+        - fazer a diferença de pontuação
+        - consertar as barras
+        
+###   - Realizados: 
+        - barras consertadas

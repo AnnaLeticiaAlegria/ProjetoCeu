@@ -6,7 +6,7 @@ emit WINDOW_SET_GRID(no);
 var integer points=0;
 var bool buttonPressed = false;
 
-code/await Bar (var Color barColor, var int position, var& int tam) -> none do
+code/await Bar (var Color barColor, var int position, var& int tam) -> NEVER do
   every FRAMES_REDRAW do
   
     var integer i;
@@ -14,7 +14,7 @@ code/await Bar (var Color barColor, var int position, var& int tam) -> none do
       emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
       emit GRAPHICS_DRAW_PIXEL(i,position);
     end
-    loop i in [0 -> tam[ do
+    loop i in ]0 -> tam] do
       emit GRAPHICS_SET_COLOR_NAME(barColor);
       emit GRAPHICS_DRAW_PIXEL(i - 15,position);
     end
@@ -23,35 +23,34 @@ end
 
 code/await  ProgressBar (none) -> none do
   var integer j=0;
-  par do
-    loop do
-      await 3s;
-      j = j + 1;
-      if j > 30 then
-        j = 30;
-        break;
-      end
+  
+  spawn Bar (COLOR_GREEN, 19, &j);
+  spawn Bar (COLOR_GREEN, 20, &j);
+
+  loop do
+    await 3s;
+    j = j + 1;
+    if j > 30 then
+      j = 30;
     end
-  with
-    spawn Bar (COLOR_GREEN, 19, &j);
-    spawn Bar (COLOR_GREEN, 20, &j);
   end
+
 end
 
 code/await PointsBar (none) -> NEVER do
  
   var integer j = outer.points/30;
-  par do
-    loop do
-      j = outer.points/30;
-      if j>30 then
-        j = 30;
-      end
-      await 10ms;
+  
+  spawn Bar (COLOR_RED, 17, &j);
+  
+  loop do
+    j = outer.points/30;
+    if j>30 then
+      j = 30;
     end
-  with
-    spawn Bar (COLOR_RED, 17, &j);
+    await 10ms;
   end
+  
 end
 
 code/await NoteBase (var integer num) -> none do
@@ -73,7 +72,7 @@ end
 code/await Note (var integer num) -> none do
   var integer j = 0;
   var integer s = 0;
-  var integer v = 48;
+  var integer v = 50;
   par/or do
     loop do
         var integer dt = await FRAMES_UPDATE;
