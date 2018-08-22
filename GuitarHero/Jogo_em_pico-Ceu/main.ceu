@@ -4,7 +4,8 @@ emit WINDOW_SET_CLEAR_COLOR_RGB(0,0,0);
 emit WINDOW_SET_GRID(no);
 
 var integer points=0;
-var bool buttonPressed = false;
+var bool buttonPressed = false; 
+var integer numberOfNotes = 123;
 
 code/await Bar (var Color barColor, var int position, var& int tam) -> NEVER do
   every FRAMES_REDRAW do
@@ -14,7 +15,7 @@ code/await Bar (var Color barColor, var int position, var& int tam) -> NEVER do
       emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
       emit GRAPHICS_DRAW_PIXEL(i,position);
     end
-    loop i in ]0 -> tam] do
+    loop i in [0 -> tam[ do
       emit GRAPHICS_SET_COLOR_NAME(barColor);
       emit GRAPHICS_DRAW_PIXEL(i - 15,position);
     end
@@ -30,24 +31,29 @@ code/await  ProgressBar (none) -> none do
   loop do
     await 3s;
     j = j + 1;
-    if j > 30 then
-      j = 30;
+    if j > 31 then
+      j = 31;
     end
   end
 
 end
 
 code/await PointsBar (none) -> NEVER do
- 
-  var integer j = outer.points/30;
+
+  var integer j = outer.points* 31/(20*(outer.numberOfNotes));
   
   spawn Bar (COLOR_RED, 17, &j);
   
   loop do
-    j = outer.points/30;
-    if j>30 then
-      j = 30;
+    j = outer.points* 31/(20*(outer.numberOfNotes));
+    if j>31 then
+      j = 31;
     end
+#if 0
+    var[10] byte str;
+    _snprintf(&&str[0],10, "%d", outer.points);
+    emit GRAPHICS_DRAW_TEXT(0,0,&&str[0]);
+#endif
     await 10ms;
   end
   
@@ -68,7 +74,30 @@ code/await NoteBase (var integer num) -> none do
     end
   end
 end
+#if 0
+code/await PointsMessage (var integer num, var integer typeNote) -> none do
+  var integer posX;
+  if typeNote == 1 then
+    posX = -6;
+  else/if typeNote == 2 then
+    posX = 6;
+  else
+    posX = 18;
+  end
+  emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
+  if num == 1 then
+    emit GRAPHICS_DRAW_TEXT(posX,-15,"great!");
+  else/if num == 2 then
+    emit GRAPHICS_DRAW_TEXT(posX,-15,"good");
+  else/if num == 3 then
+    emit GRAPHICS_DRAW_TEXT(posX,-15,"cool");
+  else
+    emit GRAPHICS_DRAW_TEXT(posX,-15,"miss!");
+  end
+  await 1s;
 
+end
+#endif
 code/await Note (var integer num) -> none do
   var integer j = 0;
   var integer s = 0;
@@ -93,15 +122,31 @@ code/await Note (var integer num) -> none do
     var integer key = await KEY_PRESS until key==keycode and outer.buttonPressed == false;
     
     outer.buttonPressed = true;
-      if (13-s) < -10 and (13-s) > -25 then
-        outer.points = outer.points + 20;
-      else
-        if outer.points >= 5 then
-          outer.points = outer.points - 5;
-        else 
-          outer.points = 0;
-        end
+    if (13-s) < -10 and (13-s) > -25 then
+      //var integer diff = [[math.abs(-15 - (14-@s))]];
+      var integer diff = -15 - (14-s);
+      if diff<0 then
+        diff = -diff;
       end
+
+      if diff == 0 or diff == 1 then
+        outer.points = outer.points + 20;
+ //       spawn PointsMessage (1, num);
+      else/if diff == 2 or diff == 3 then
+        outer.points = outer.points + 15;
+//        spawn PointsMessage (2, num);
+      else/if diff == 4 then
+        outer.points = outer.points + 10;
+//        spawn PointsMessage (3, num);
+      end
+    else
+ //     spawn PointsMessage (4, num);
+      if outer.points >= 5 then
+        outer.points = outer.points - 5;
+      else 
+        outer.points = 0;
+      end
+    end
   with
     every FRAMES_REDRAW do
       if num == 1 then
@@ -147,7 +192,7 @@ spawn NoteBase(3);
 ]]
 
 var int noteNum = [[ #MUSICA ]];
-
+  
 spawn do
     every KEY_PRESS do
         buttonPressed = false;
@@ -172,4 +217,19 @@ spawn Note(noteType);
 
 //_ceu_assert(0,"aaa");
 
+await 2s;
+var integer perc = points/numberOfNotes * 100;
+
+every FRAMES_REDRAW do
+  emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
+  emit GRAPHICS_SET_FONT("tiny.ttf", 8);
+  if perc >= 75 then
+    emit GRAPHICS_DRAW_TEXT(0,0,"GOOD");
+  else/if perc >= 85 then
+    emit GRAPHICS_DRAW_TEXT(0,0,"GREAT!!");
+  else
+    emit GRAPHICS_DRAW_TEXT(0,0,"TRY AGAIN!");
+  end
+end
+  
 await FOREVER;

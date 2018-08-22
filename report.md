@@ -122,3 +122,5 @@
         
 ###   - Realizados: 
         - barras consertadas
+        - diferença de pontuação
+        - mensagem de acordo com a pontuação sendo exibida no final do jogo
