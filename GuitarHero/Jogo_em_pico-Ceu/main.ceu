@@ -74,30 +74,7 @@ code/await NoteBase (var integer num) -> none do
     end
   end
 end
-#if 0
-code/await PointsMessage (var integer num, var integer typeNote) -> none do
-  var integer posX;
-  if typeNote == 1 then
-    posX = -6;
-  else/if typeNote == 2 then
-    posX = 6;
-  else
-    posX = 18;
-  end
-  emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
-  if num == 1 then
-    emit GRAPHICS_DRAW_TEXT(posX,-15,"great!");
-  else/if num == 2 then
-    emit GRAPHICS_DRAW_TEXT(posX,-15,"good");
-  else/if num == 3 then
-    emit GRAPHICS_DRAW_TEXT(posX,-15,"cool");
-  else
-    emit GRAPHICS_DRAW_TEXT(posX,-15,"miss!");
-  end
-  await 1s;
 
-end
-#endif
 code/await Note (var integer num) -> none do
   var integer j = 0;
   var integer s = 0;
@@ -131,16 +108,12 @@ code/await Note (var integer num) -> none do
 
       if diff == 0 or diff == 1 then
         outer.points = outer.points + 20;
- //       spawn PointsMessage (1, num);
       else/if diff == 2 or diff == 3 then
         outer.points = outer.points + 15;
-//        spawn PointsMessage (2, num);
       else/if diff == 4 then
         outer.points = outer.points + 10;
-//        spawn PointsMessage (3, num);
       end
     else
- //     spawn PointsMessage (4, num);
       if outer.points >= 5 then
         outer.points = outer.points - 5;
       else 
@@ -218,15 +191,15 @@ spawn Note(noteType);
 //_ceu_assert(0,"aaa");
 
 await 2s;
-var integer perc = points/numberOfNotes * 100;
+var real perc = points*100/(20*numberOfNotes);
 
 every FRAMES_REDRAW do
   emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
   emit GRAPHICS_SET_FONT("tiny.ttf", 8);
-  if perc >= 75 then
-    emit GRAPHICS_DRAW_TEXT(0,0,"GOOD");
-  else/if perc >= 85 then
+  if perc >= 80 then
     emit GRAPHICS_DRAW_TEXT(0,0,"GREAT!!");
+  else/if perc >= 70 then
+    emit GRAPHICS_DRAW_TEXT(0,0,"GOOD");
   else
     emit GRAPHICS_DRAW_TEXT(0,0,"TRY AGAIN!");
   end

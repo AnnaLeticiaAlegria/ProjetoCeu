@@ -3,7 +3,6 @@ Bugs/Tarefas:
     - música não está tocando --> ver se o problema é ela estar em mp3
     - ajustar a velocidade que as notas caem
     - ver a questão do módulo, na linha 98
-    - consertar a parte do PoinsMessage -> não está pritando --> colocar dentro do FRAMES_REDRAW e ver como fazer para ele desaparecer depois
     
 Resolvidos:
 
@@ -15,3 +14,4 @@ Resolvidos:
       --> notas caindo de forma sequencial mas uma só cai quando a outra some (porque está com await e não com spawn)
     - consertar barras --> elas não estão aparecendo mais
     - ajustar sistema de pontos --> dividir mais na hora de preencher a barra e fazer diferença de pontuação
+    - consertar a parte do PoinsMessage -> não está pritando --> colocar dentro do FRAMES_REDRAW e ver como fazer para ele desaparecer depois --> letra fica pequena demais, ilegível

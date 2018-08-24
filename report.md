@@ -124,3 +124,11 @@
         - barras consertadas
         - diferença de pontuação
         - mensagem de acordo com a pontuação sendo exibida no final do jogo
+        - tempo das notas ajustado
+
+# **Semana 27/08/2018 - 02/09/2018**
+
+###   - Planejamentos:
+        - colocar as imagens em bmp
+        - fazer a música tocar
+        - fazer os comandos serem dados pelos botões do arduino
