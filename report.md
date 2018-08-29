@@ -132,3 +132,7 @@
         - colocar as imagens em bmp
         - fazer a música tocar
         - fazer os comandos serem dados pelos botões do arduino
+
+###   - Realizados: 
+        - imagens em bmp colocadas
+        

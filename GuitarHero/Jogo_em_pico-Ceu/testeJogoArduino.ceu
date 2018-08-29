@@ -1,0 +1,73 @@
+#include "gpio.ceu"
+
+output bool PIN_03; //BUZZER
+
+output bool PIN_13; /*LED1*/
+output bool PIN_12; /*LED2*/
+output bool PIN_11; /*LED3*/
+output bool PIN_10; /*LED4*/
+
+output bool PIN_04; //LATCH_DIO
+output bool PIN_07; //CLK_DIO
+output bool PIN_08; //DATA_DIO
+
+native _shiftOut;
+native _MSBFIRST;
+
+//para os LEDs começarem apagados
+emit PIN_10(true);
+emit PIN_11(true);
+emit PIN_12(true);
+emit PIN_13(true);
+emit PIN_03(true);
+
+input (int,bool) PIN_;
+code/await Pin_ (var int pin) -> NEVER do
+	{ pinMode(@pin, INPUT); }
+	var bool v1 = _digitalRead(pin) as bool;
+	loop do
+		await 50ms;
+		var bool v2 = _digitalRead(pin) as bool;
+		if v1 != v2 then
+			v1 = v2;
+			await async (pin,v1) do
+				emit PIN_(pin,v1);
+			end
+		end
+	end
+end
+
+spawn Pin_(_A1);
+spawn Pin_(_A2);
+spawn Pin_(_A3);
+
+code/await Segurou_botao (var int botao) -> none do
+	var int pin;
+	var bool v;
+	loop do
+		(pin,v) = await PIN_ until pin==botao and v==false;
+		par/or do
+			(pin,v) = await PIN_ until pin==botao and v==true;
+		with
+			await 2s;
+			break;
+		end
+	end
+end
+
+emit WINDOW_CLEAR();
+emit GRAPHICS_SET_FONT("tiny.ttf", 8);
+emit GRAPHICS_DRAW_TEXT(0,10,"PRESS BUTTON");
+await 1s;
+emit GRAPHICS_DRAW_TEXT(0,-10,"TO START");
+  
+await Segurou_botao (_A1);
+
+emit GRAPHICS_SET_COLOR_NAME(COLOR_RED);
+emit GRAPHICS_DRAW_RECT(0,0,10,10);
+
+var integer key = await KEY_PRESS until key==13; //pressionar enter
+emit PIN_13(false); //acender um led
+
+await FOREVER;
+

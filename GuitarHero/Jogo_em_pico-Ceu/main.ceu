@@ -44,17 +44,18 @@ code/await PointsBar (none) -> NEVER do
   
   spawn Bar (COLOR_RED, 17, &j);
   
-  loop do
+  every FRAMES_UPDATE do
     j = outer.points* 31/(20*(outer.numberOfNotes));
     if j>31 then
       j = 31;
     end
+    
 #if 0
     var[10] byte str;
     _snprintf(&&str[0],10, "%d", outer.points);
     emit GRAPHICS_DRAW_TEXT(0,0,&&str[0]);
 #endif
-    await 10ms;
+
   end
   
 end
@@ -63,14 +64,14 @@ code/await NoteBase (var integer num) -> none do
 
   every FRAMES_REDRAW do
     if num == 1 then
-      emit GRAPHICS_SET_COLOR_RGB(0XFF,0,0);
-      emit GRAPHICS_DRAW_RECT(-12,-15,5,5);
+      emit GRAPHICS_SET_BMP_SIZE(5,5);
+      emit GRAPHICS_DRAW_BMP(-12,-15, "imagens/base1a.bmp");
     else/if num == 2 then
-      emit GRAPHICS_SET_COLOR_RGB(0,0XFF,0);
-      emit GRAPHICS_DRAW_RECT(0,-15,5,5);
+      emit GRAPHICS_SET_BMP_SIZE(5,5);
+      emit GRAPHICS_DRAW_BMP(0,-15, "imagens/base2a.bmp");
     else
-      emit GRAPHICS_SET_COLOR_RGB(0,0,0XFF);
-      emit GRAPHICS_DRAW_RECT(12,-15,5,5);
+      emit GRAPHICS_SET_BMP_SIZE(5,5);
+      emit GRAPHICS_DRAW_BMP(12,-15, "imagens/base3a.bmp");
     end
   end
 end
@@ -123,14 +124,14 @@ code/await Note (var integer num) -> none do
   with
     every FRAMES_REDRAW do
       if num == 1 then
-        emit GRAPHICS_SET_COLOR_RGB(0xFF,0,0);
-        emit GRAPHICS_DRAW_RECT(-12,14-s,5,5);
+        emit GRAPHICS_SET_BMP_SIZE(5,5);
+        emit GRAPHICS_DRAW_BMP(-12,14-s, "imagens/nota1a.bmp");
       else/if num == 2 then
-        emit GRAPHICS_SET_COLOR_RGB(0,0xFF,0);
-        emit GRAPHICS_DRAW_RECT(0,14-s,5,5);
+        emit GRAPHICS_SET_BMP_SIZE(5,5);
+        emit GRAPHICS_DRAW_BMP(0,14-s, "imagens/nota2a.bmp");
       else
-        emit GRAPHICS_SET_COLOR_RGB(0,0,0xFF);
-        emit GRAPHICS_DRAW_RECT(12,14-s,5,5);
+        emit GRAPHICS_SET_BMP_SIZE(5,5);
+        emit GRAPHICS_DRAW_BMP(12,14-s, "imagens/nota3a.bmp");
       end
     end
   end
