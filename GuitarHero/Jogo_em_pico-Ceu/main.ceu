@@ -137,6 +137,41 @@ code/await Note (var integer num) -> none do
   end
 end
 
+code/await MessageDisplay (var real percent) -> none do
+
+  every FRAMES_REDRAW do
+    emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
+    emit GRAPHICS_SET_FONT("tiny.ttf", 8);
+    if percent >= 80 then
+      emit GRAPHICS_DRAW_TEXT(0,0,"GREAT!!");
+    else/if percent >= 70 then
+      emit GRAPHICS_DRAW_TEXT(0,0,"GOOD");
+    else
+      emit GRAPHICS_DRAW_TEXT(0,0,"TRY AGAIN!");
+    end
+  end
+  await 3s;
+end
+
+code/await RestartMessage (none) -> none do
+  
+  await 2s;
+  emit FRAMES_SET(no);
+  emit WINDOW_CLEAR();
+  emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
+  emit GRAPHICS_SET_FONT("tiny.ttf", 8);
+  emit FRAMES_SET(yes);
+  
+  every FRAMES_REDRAW do
+    emit GRAPHICS_DRAW_TEXT(0,15,"PRESS ENTER");
+    emit GRAPHICS_DRAW_TEXT(0,10,"TO RESTART");
+    emit GRAPHICS_DRAW_TEXT(0,-10,"PRESS ESC");
+    emit GRAPHICS_DRAW_TEXT(0,-15,"TO EXIT");
+  end
+end
+
+
+
 
 emit FRAMES_SET(no);
 emit WINDOW_CLEAR();
@@ -144,66 +179,67 @@ emit GRAPHICS_SET_FONT("tiny.ttf", 8);
 emit GRAPHICS_DRAW_TEXT(0,10,"PRESS ENTER");
 await 1s;
 emit GRAPHICS_DRAW_TEXT(0,-10,"TO START");
-  
+ 
 var integer key = await KEY_PRESS until key==13; //começa o jogo após apertar o enter
 await 1s;
 
-emit FRAMES_SET(yes);
+loop do
+ 
+  emit FRAMES_SET(yes);
 
-emit SOUND_SET_VOLUME(100);
-emit SOUND_PLAY("/home/annaleticia/ProjetoCeu/GuitarHero/Jogo_em_pico-Ceu/NoGameNoLife-INSTRUMENTAL.mp3");
-emit WINDOW_CLEAR();
+  emit SOUND_SET_VOLUME(100);
+  emit SOUND_PLAY("/home/annaleticia/ProjetoCeu/GuitarHero/Jogo_em_pico-Ceu/NoGameNoLife-INSTRUMENTAL.mp3");
+  emit WINDOW_CLEAR();
 
-spawn ProgressBar();
-spawn PointsBar();
-spawn NoteBase(1);
-spawn NoteBase(2);
-spawn NoteBase(3);
+  spawn ProgressBar();
+  spawn PointsBar();
+  spawn NoteBase(1);
+  spawn NoteBase(2);
+  spawn NoteBase(3);
 
 
-[[
-    dofile 'musica.lua'
-]]
+  [[
+      dofile 'musica.lua'
+  ]]
 
-var int noteNum = [[ #MUSICA ]];
+  var int noteNum = [[ #MUSICA ]];
   
-spawn do
-    every KEY_PRESS do
-        buttonPressed = false;
-    end
-end
+  spawn do
+      every KEY_PRESS do
+          buttonPressed = false;
+      end
+  end
 
-pool[] Note notes;
+  pool[] Note notes;
 
-var int noteTime = [[ MUSICA[1][1]*1000 ]];
-await (noteTime)ms;
+  var int noteTime = [[ MUSICA[1][1]*1000 ]];
+  await (noteTime)ms;
 
-var int i;
-loop i in [1 -> noteNum[ do
-    var int noteType = [[ MUSICA[@i][2] ]];
-    spawn Note(noteType) in notes;
-    noteTime = [[ (MUSICA[@i+1][1] - MUSICA[@i][1])*1000 ]];
-    await (noteTime)ms;
-end
+  var int i;
+  loop i in [1 -> noteNum[ do
+      var int noteType = [[ MUSICA[@i][2] ]];
+      spawn Note(noteType) in notes;
+      noteTime = [[ (MUSICA[@i+1][1] - MUSICA[@i][1])*1000 ]];
+      await (noteTime)ms;
+  end
 
-var int noteType = [[ MUSICA[@noteNum][2] ]];
-spawn Note(noteType);
+  var int noteType = [[ MUSICA[@noteNum][2] ]];
+  spawn Note(noteType);
 
 //_ceu_assert(0,"aaa");
 
-await 2s;
-var real perc = points*100/(20*numberOfNotes);
+  await 3s;
+  var real perc = points*100/(20*numberOfNotes);
+  spawn MessageDisplay (perc);
 
-every FRAMES_REDRAW do
-  emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
-  emit GRAPHICS_SET_FONT("tiny.ttf", 8);
-  if perc >= 80 then
-    emit GRAPHICS_DRAW_TEXT(0,0,"GREAT!!");
-  else/if perc >= 70 then
-    emit GRAPHICS_DRAW_TEXT(0,0,"GOOD");
-  else
-    emit GRAPHICS_DRAW_TEXT(0,0,"TRY AGAIN!");
+
+  spawn RestartMessage ();
+  par/or do
+    var integer key = await KEY_PRESS until key==13;
+    points = 0;
+  with
+    var integer key = await KEY_PRESS until key==27;
+    break;
   end
 end
-  
 await FOREVER;

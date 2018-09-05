@@ -4,6 +4,7 @@ Bugs/Tarefas:
     - ajustar a velocidade que as notas caem
     - ver a questão do módulo, na linha 104
     - testar o testeJogoArduino, ver se tem a biblioteca gpio.ceu
+    - consertar parte de dar restart no jogo --> ver como resetar o FRAMES_REDRAW e fazer a parte das mensagens (GOOD,GREAT) desaparecer
     
 Resolvidos:
 

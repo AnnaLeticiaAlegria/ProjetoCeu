@@ -135,4 +135,15 @@
 
 ###   - Realizados: 
         - imagens em bmp colocadas
+        - começo da implementação do jogo reiniciar
         
+# **Semana 03/09/2018 - 09/09/2018**
+
+###   - Planejamentos:
+        - fazer a música tocar
+        - fazer os comandos serem dados pelos botões do arduino
+        - implementar reinicio de jogo
+        - testar criar notas a partir de um arquivo MIDI
+
+###   - Realizados: 
+        - 
