@@ -3,21 +3,22 @@ emit WINDOW_SET_SIZE(600,600,60,60);
 emit WINDOW_SET_CLEAR_COLOR_RGB(0,0,0);
 emit WINDOW_SET_GRID(no);
 
-var integer points=0;
+var integer points = 0;
 var bool buttonPressed = false; 
-var integer numberOfNotes = 123;
+var int noteNum = 1;
+var int barSize = 51;
 
 code/await Bar (var Color barColor, var int position, var& int tam) -> NEVER do
   every FRAMES_REDRAW do
   
     var integer i;
-    loop i in [tam-15 -> 15] do
+    loop i in [tam-outer.barSize/2 -> outer.barSize/2] do
       emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
       emit GRAPHICS_DRAW_PIXEL(i,position);
     end
     loop i in [0 -> tam[ do
       emit GRAPHICS_SET_COLOR_NAME(barColor);
-      emit GRAPHICS_DRAW_PIXEL(i - 15,position);
+      emit GRAPHICS_DRAW_PIXEL(i - outer.barSize/2,position);
     end
   end
 end
@@ -29,10 +30,10 @@ code/await  ProgressBar (none) -> none do
   spawn Bar (COLOR_GREEN, 20, &j);
 
   loop do
-    await 3s;
+    await (90000/outer.barSize)ms;
     j = j + 1;
-    if j > 31 then
-      j = 31;
+    if j > outer.barSize then
+      j = outer.barSize;
     end
   end
 
@@ -40,14 +41,14 @@ end
 
 code/await PointsBar (none) -> NEVER do
 
-  var integer j = outer.points* 31/(20*(outer.numberOfNotes));
+  var integer j = outer.points* outer.barSize/(20*(outer.noteNum));
   
   spawn Bar (COLOR_RED, 17, &j);
   
   every FRAMES_UPDATE do
-    j = outer.points* 31/(20*(outer.numberOfNotes));
-    if j>31 then
-      j = 31;
+    j = outer.points* outer.barSize/(20*(outer.noteNum));
+    if j>outer.barSize then
+      j = outer.barSize;
     end
     
 #if 0
@@ -142,7 +143,9 @@ code/await MessageDisplay (var real percent) -> none do
   every FRAMES_REDRAW do
     emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
     emit GRAPHICS_SET_FONT("tiny.ttf", 8);
-    if percent >= 80 then
+    if percent >= 95 then
+      emit GRAPHICS_DRAW_TEXT(0,0,"PERFECT!!");
+    else/if percent >= 80 then
       emit GRAPHICS_DRAW_TEXT(0,0,"GREAT!!");
     else/if percent >= 70 then
       emit GRAPHICS_DRAW_TEXT(0,0,"GOOD");
@@ -202,7 +205,7 @@ loop do
       dofile 'musica.lua'
   ]]
 
-  var int noteNum = [[ #MUSICA ]];
+  noteNum = [[ #MUSICA ]];
   
   spawn do
       every KEY_PRESS do
@@ -229,7 +232,7 @@ loop do
 //_ceu_assert(0,"aaa");
 
   await 3s;
-  var real perc = points*100/(20*numberOfNotes);
+  var real perc = points*100/(20*noteNum);
   spawn MessageDisplay (perc);
 
 

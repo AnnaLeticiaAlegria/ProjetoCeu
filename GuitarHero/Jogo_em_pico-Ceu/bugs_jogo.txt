@@ -5,6 +5,7 @@ Bugs/Tarefas:
     - ver a questão do módulo, na linha 104
     - testar o testeJogoArduino, ver se tem a biblioteca gpio.ceu
     - consertar parte de dar restart no jogo --> ver como resetar o FRAMES_REDRAW e fazer a parte das mensagens (GOOD,GREAT) desaparecer
+    - ver como fechar a janela do jogo ao apertar ESC no final
     
 Resolvidos:
 

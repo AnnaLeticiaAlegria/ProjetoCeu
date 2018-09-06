@@ -146,4 +146,5 @@
         - testar criar notas a partir de um arquivo MIDI
 
 ###   - Realizados: 
-        - 
+        - reinicio de jogo implementado
+        - barras de progresso e de pontos mais largas e podendo variar o tamanho
