@@ -148,3 +148,15 @@
 ###   - Realizados: 
         - reinicio de jogo implementado
         - barras de progresso e de pontos mais largas e podendo variar o tamanho
+
+# **Semana 10/09/2018 - 16/09/2018**
+
+###   - Planejamentos:
+        - fazer a música tocar
+        - fazer os comandos serem dados pelos botões do arduino
+        
+###   - Realizados: 
+        - reinicio de jogo implementado
+        - parte de aparecer mensagem de Restart consertada
+        - modificações para organizar o código
+        - jogo fechando quando o usuário não deseja jogar novamente

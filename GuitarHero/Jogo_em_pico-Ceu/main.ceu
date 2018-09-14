@@ -158,7 +158,7 @@ end
 
 code/await RestartMessage (none) -> none do
   
-  await 2s;
+  //await 2s;
   emit FRAMES_SET(no);
   emit WINDOW_CLEAR();
   emit GRAPHICS_SET_COLOR_NAME(COLOR_WHITE);
@@ -166,15 +166,38 @@ code/await RestartMessage (none) -> none do
   emit FRAMES_SET(yes);
   
   every FRAMES_REDRAW do
-    emit GRAPHICS_DRAW_TEXT(0,15,"PRESS ENTER");
+    emit GRAPHICS_DRAW_TEXT(0,16,"PRESS ENTER");
     emit GRAPHICS_DRAW_TEXT(0,10,"TO RESTART");
     emit GRAPHICS_DRAW_TEXT(0,-10,"PRESS ESC");
-    emit GRAPHICS_DRAW_TEXT(0,-15,"TO EXIT");
+    emit GRAPHICS_DRAW_TEXT(0,-16,"TO EXIT");
   end
 end
 
+code/await NotesGenerator (none) -> none
+  throws Exception.Lua
+do
+  
+  [[
+      dofile 'musica.lua'
+  ]]
 
+  outer.noteNum = [[ #MUSICA ]];
+  pool[] Note notes;
 
+  var int noteTime = [[ MUSICA[1][1]*1000 ]];
+  await (noteTime)ms;
+
+  var int i;
+  loop i in [1 -> outer.noteNum[ do
+      var int noteType = [[ MUSICA[@i][2] ]];
+      spawn Note(noteType) in notes;
+      noteTime = [[ (MUSICA[@i+1][1] - MUSICA[@i][1])*1000 ]];
+      await (noteTime)ms;
+  end
+
+  var int noteType = [[ MUSICA[@outer.noteNum][2] ]];
+  await Note(noteType);
+end
 
 emit FRAMES_SET(no);
 emit WINDOW_CLEAR();
@@ -188,61 +211,46 @@ await 1s;
 
 loop do
  
-  emit FRAMES_SET(yes);
+  do
+    emit FRAMES_SET(yes);
 
-  emit SOUND_SET_VOLUME(100);
-  emit SOUND_PLAY("/home/annaleticia/ProjetoCeu/GuitarHero/Jogo_em_pico-Ceu/NoGameNoLife-INSTRUMENTAL.mp3");
-  emit WINDOW_CLEAR();
+    emit SOUND_SET_VOLUME(100);
+    emit SOUND_PLAY("/home/annaleticia/ProjetoCeu/GuitarHero/Jogo_em_pico-Ceu/NoGameNoLife-INSTRUMENTAL.mp3");
+    emit WINDOW_CLEAR();
 
-  spawn ProgressBar();
-  spawn PointsBar();
-  spawn NoteBase(1);
-  spawn NoteBase(2);
-  spawn NoteBase(3);
+    spawn ProgressBar();
+    spawn PointsBar();
+    spawn NoteBase(1);
+    spawn NoteBase(2);
+    spawn NoteBase(3);
 
-
-  [[
-      dofile 'musica.lua'
-  ]]
-
-  noteNum = [[ #MUSICA ]];
   
-  spawn do
+    spawn do
       every KEY_PRESS do
-          buttonPressed = false;
+        buttonPressed = false;
       end
-  end
-
-  pool[] Note notes;
-
-  var int noteTime = [[ MUSICA[1][1]*1000 ]];
-  await (noteTime)ms;
-
-  var int i;
-  loop i in [1 -> noteNum[ do
-      var int noteType = [[ MUSICA[@i][2] ]];
-      spawn Note(noteType) in notes;
-      noteTime = [[ (MUSICA[@i+1][1] - MUSICA[@i][1])*1000 ]];
-      await (noteTime)ms;
-  end
-
-  var int noteType = [[ MUSICA[@noteNum][2] ]];
-  spawn Note(noteType);
-
+    end
+    
+    await NotesGenerator();
+    
 //_ceu_assert(0,"aaa");
 
-  await 3s;
-  var real perc = points*100/(20*noteNum);
-  spawn MessageDisplay (perc);
+    var real perc = points*100/(20*noteNum);
+  
+  
+    spawn MessageDisplay (perc);
+    await 2s;
+  end
 
 
   spawn RestartMessage ();
   par/or do
-    var integer key = await KEY_PRESS until key==13;
+    var integer keyR = await KEY_PRESS until keyR==13;
     points = 0;
   with
-    var integer key = await KEY_PRESS until key==27;
+    var integer keyE = await KEY_PRESS until keyE==27;
     break;
   end
 end
-await FOREVER;
+
+escape 0;
