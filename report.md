@@ -160,3 +160,19 @@
         - parte de aparecer mensagem de Restart consertada
         - modificações para organizar o código
         - jogo fechando quando o usuário não deseja jogar novamente
+
+# **Semana 17/09/2018 - 30/09/2018**
+
+###   - Planejamentos:
+        - pesquisar projetos opensource que utilizem NRF24L01+
+        
+###   - Realizados: 
+        - resultados da pesquisa no arquivo Projetos_NRF24701.txt
+        
+# **Semana 01/10/2018 - 07/10/2018**
+
+###   - Planejamentos:
+        - reescrever código do carrinho em ceu
+        - reescrever cõdigo do controle do carrinho em ceu
+        
+###   - Realizados: 

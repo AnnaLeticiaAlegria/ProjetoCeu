@@ -1,0 +1,66 @@
+
+Carrinho que anda 
+
+    - Link: https://create.arduino.cc/projecthub/Blue_jack/rc-toy-car-using-nrf24l01-4a9f38?ref=search&ref_id=NRF24L01&offset=3
+    
+    - Funcionamento: Controle envia sinais para controlar o carrinho.
+    
+    - Componentes:
+        - Carrinho:
+            - Chassi do robô com rodas e motores
+            - Arduino Pro-Mini
+            - nRF24L01
+            - Regulador de tensão 3.3V
+            - Motor Driver L293D
+            - 4 pilhas AA e AA Cell Holder
+            
+        - Controle:
+            - Arduino Pro Mini
+            - nRF24L01
+            - 4 botões
+            - protoboard
+            - jumpers
+        
+ 
+Estação wireless de monitoramento do clima
+
+    - Link: https://www.instructables.com/id/Arduino-Wireless-Weather-Station/
+    
+    - Funcionamento: Compara a temperatura e umidade do lado de fora da casa com as do lado de dentro.
+    
+    - Componentes:
+        - Transmitter:
+            - Arduino Nano
+            - Sensor DHT22 (Sensor de umidade e temperatura)
+            - nRF24L01
+            - protoboard
+            - jumpers
+            
+        - Receiver:
+            - Arduino Mega
+            - Sensor DHT22 (Sensor de umidade e temperatura)
+            - nRF24L01
+            - 3.2" Color TFT display
+            - DS3231 Real Time Clock module
+            - protoboard
+            - jumpers
+            
+Carrinho controlado por joystick
+
+    - Link: https://dronebotworkshop.com/nrf24l01-wireless-joystick/
+    
+    - Componentes:
+        - Carrinho:
+            - Chassi do robô com rodas e motores
+            - Arduino Pro-Mini
+            - nRF24L01
+            - Regulador de tensão 3.3V
+            - Motor Driver L293D
+            - 4 pilhas AA e AA Cell Holder
+            
+        - Controle:
+            - Arduino UNO
+            - nRF24L01
+            - Joystick 
+            - protoboard
+            - jumpers

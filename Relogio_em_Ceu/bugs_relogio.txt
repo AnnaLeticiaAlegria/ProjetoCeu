@@ -20,3 +20,8 @@ Resolvidos:
     - Para ativar o modo soneca, é preciso pressionar os botões 1 e 3 por 2 segundos. Porém, fazer isso ativa o ajuste de horário ou o ajuste de alarme. Daria para resolver com uma variável global, mas pensar em uma solução mais bonita
     - Modo soneca não está sendo ativado --> problema ao tentar segurar os dois botões ao mesmo tempo, se fizer pressionando, funciona
         - TestaSeguraBotao --> consertar caso de segurar dois botões ao mesmo tempo (ainda está ativando os botões individualmente). Caso de apertar cada um separadamente foi resolvido e não está ativando o caso de apertar os dois juntos
+
+        
+make CEU_SRC=libraries/driver-nrf24l01/examples/nrf24l01-tx.ceu ARD_PORT=/dev/ttyACM0
+make CEU_SRC=libraries/driver-nrf24l01/examples/nrf24l01-tx.ceu ARD_PORT=/dev/ttyACM1 ARD_BOARD=mega ARD_CPU=atmega2560
+cu -l /dev/ttyACM1
