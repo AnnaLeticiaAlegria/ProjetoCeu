@@ -176,3 +176,5 @@
         - reescrever cõdigo do controle do carrinho em ceu
         
 ###   - Realizados: 
+        - criado driver pcint2.ceu
+        - código do controle reescrito e funcionando

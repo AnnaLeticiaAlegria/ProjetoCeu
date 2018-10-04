@@ -8,7 +8,6 @@ code/await Pin (var int pin) -> NEVER do
             var bool v2 = _digitalRead(pin) as bool;
             if v1 != v2 then
                 v1 = v2;
-//_ceu_arduino_assert(0, 5+pin-_A1+1);
                 emit PIN(pin,v1);
             end
         end

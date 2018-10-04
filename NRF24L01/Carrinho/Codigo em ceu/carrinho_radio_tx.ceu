@@ -1,0 +1,39 @@
+#include "int0.ceu"
+#include "spi.ceu"
+#include "pcint2.ceu" //usar pinos 3 (PCINT19),4 (PCINT20),5 (PCINT21),6 (PCINT22) para os botões do controle
+
+#define NRF24L01_IRQ INT0
+#include "nrf24l01.ceu"
+
+//input none PCINT2; 
+
+call PCINT2_Enable(_PCINT19, on); 
+call PCINT2_Enable(_PCINT20, on); 
+call PCINT2_Enable(_PCINT21, on); 
+call PCINT2_Enable(_PCINT22, on); 
+
+{Serial.begin(9600);}
+{Serial.println("Controle_tx");}
+{_DELAY(20);}
+
+var Lock spi = _;
+
+var NRF24L01_Data nrf = val NRF24L01_Data(&spi, 8,7, _,_,_,_,_,_,_);
+spawn NRF24L01_Init(&nrf);
+await nrf.ok; // espera o rádio dar o sinal de ok
+
+var int i;
+loop i do
+    await 1s;
+    
+    var byte v = 0;
+    _bitWrite(v, _PCINT19, call PCINT2_Get(_PCINT19)); //leitura do pino 3 - direita
+    _bitWrite(v, _PCINT20, call PCINT2_Get(_PCINT20)); //leitura do pino 4 - esquerda
+    _bitWrite(v, _PCINT21, call PCINT2_Get(_PCINT21)); //leitura do pino 5 - tras
+    _bitWrite(v, _PCINT22, call PCINT2_Get(_PCINT22)); //leitura do pino 6 - frente
+    
+    var [1] byte buf = [v];
+    
+    await NRF24L01_Tx(&nrf, &buf);
+    {Serial.print("< "); Serial.println(@v); _DELAY(10);}
+end
