@@ -178,3 +178,13 @@
 ###   - Realizados: 
         - criado driver pcint2.ceu
         - código do controle reescrito e funcionando
+
+# **Semana 08/10/2018 - 14/10/2018**
+
+###   - Planejamentos:
+        - reescrever código do carrinho em ceu
+        - medir diferenças energéticas entre os códigos
+        
+###   - Realizados: 
+        - código do carrinho reescrito e funcionando --> falta testar no carrinho com os motores
+        -

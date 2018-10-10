@@ -1,0 +1,103 @@
+#include "int0.ceu"
+#include "out.ceu"
+#include "spi.ceu"
+#include "pcint2.ceu" //usar pinos 3  (PCINT19), 4  (PCINT20),5 (PCINT21),6 (PCINT22) para os motores --> 3 e 4 para o motor 1 e 5 e 6 para o motor 2
+
+#define NRF24L01_IRQ INT0
+#include "nrf24l01.ceu"
+
+call PCINT2_Enable(_PCINT19, on); 
+call PCINT2_Enable(_PCINT20, on); 
+call PCINT2_Enable(_PCINT21, on); 
+call PCINT2_Enable(_PCINT22, on); 
+
+
+{Serial.begin(9600);}
+{Serial.println("Carrinho_rx");}
+{_DELAY(20);}
+
+var Lock spi = _;
+
+var NRF24L01_Data nrf = val NRF24L01_Data(&spi, 8,7, _,_,_,_,_,_,_);
+spawn NRF24L01_Init(&nrf);
+await nrf.ok; // espera o rádio dar o sinal de ok
+
+var int i;
+loop i do
+    await 1s;
+    
+    
+    var [1] byte buf = [];
+    
+    await NRF24L01_Rx(&nrf, &buf);
+    {Serial.print("< "); Serial.println(@buf[0]); _DELAY(10);}
+    
+    var int value = buf[0] as integer;
+    
+    if (value == 120) then 
+        // stop
+        emit OUT(_PCINT19, low);
+        emit OUT(_PCINT20, low);
+        emit OUT(_PCINT21, low);
+        emit OUT(_PCINT22, low);
+    
+        //{ Serial.println("LLLL"); }
+        
+    else/if (value == 88) then
+        // move forward
+        emit OUT(_PCINT19, high);
+        emit OUT(_PCINT20, low );
+        emit OUT(_PCINT21, low );
+        emit OUT(_PCINT22, high);
+        
+        //{ Serial.println("HLLH"); }
+            
+    else/if (value == 56) then
+        // move backward
+        emit OUT(_PCINT19, low );
+        emit OUT(_PCINT20, high);
+        emit OUT(_PCINT21, high);
+        emit OUT(_PCINT22, low );
+    
+        //{ Serial.println("LHHL"); }
+            
+    else/if (value == 112) then
+        // move right
+        emit OUT(_PCINT19, low );
+        emit OUT(_PCINT20, low );
+        emit OUT(_PCINT21, low );
+        emit OUT(_PCINT22, high);
+
+        //{ Serial.println("LLLH"); }
+            
+    else/if (value == 104) then
+        // move left
+        emit OUT(_PCINT19, high);
+        emit OUT(_PCINT20, low );
+        emit OUT(_PCINT21, low );
+        emit OUT(_PCINT22, low );
+
+       // { Serial.println("HLLL"); }
+                    
+    else 
+        // stop
+        emit OUT(_PCINT19, low);
+        emit OUT(_PCINT20, low);
+        emit OUT(_PCINT21, low);
+        emit OUT(_PCINT22, low);
+    
+       // { Serial.println("LLLL"); }
+        
+    end
+end
+
+#if 0 
+
+buf = 120 -> recebeu 01111000 --> nenhum botão pressionado
+buf = 112 -> recebeu 01110000 --> botão 3 pressionado (direita)
+buf = 104 -> recebeu 01101000 --> botão 4 pressionado (esquerda)
+buf = 88  -> recebeu 01011000 --> botão 5 pressionado (frente)
+buf = 56  -> recebeu 00111000 --> botão 6 pressionado (trás)
+qualquer outro valor -> carro fica parado
+
+#endif
