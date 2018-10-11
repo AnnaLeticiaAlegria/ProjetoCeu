@@ -1,0 +1,12 @@
+Diferenças energéticas entre os códigos:
+
+    - Código do controle:
+    
+        - Em arduino: 125,9 mA
+        - Em ceu: 110,4 mA
+
+    - Código do carrinho:
+    
+        - Em arduino: 126 mA
+        - Em ceu: 115,0 mA
+

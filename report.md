@@ -187,4 +187,4 @@
         
 ###   - Realizados: 
         - código do carrinho reescrito e funcionando --> falta testar no carrinho com os motores
-        -
+        - diferenças energéticas medidas --> remedir após consertar mal contato dos fios
