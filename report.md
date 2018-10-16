@@ -188,3 +188,15 @@
 ###   - Realizados: 
         - código do carrinho reescrito e funcionando --> falta testar no carrinho com os motores
         - diferenças energéticas medidas --> remedir após consertar mal contato dos fios
+ 
+# **Semana 15/10/2018 - 21/10/2018**
+
+###   - Planejamentos:
+        - fazer o carrinho funcionar de forma completa
+        - corrigir o código para não enviar sempre os dados
+        
+###   - Realizados: 
+
+
+    
+

@@ -4,6 +4,8 @@
 
 #define NRF24L01_IRQ INT0
 #include "nrf24l01.ceu"
+#include "usart.ceu"
+#include "string.ceu"
 
 //input none PCINT2; 
 
@@ -12,9 +14,9 @@ call PCINT2_Enable(_PCINT20, on);
 call PCINT2_Enable(_PCINT21, on); 
 call PCINT2_Enable(_PCINT22, on); 
 
-{Serial.begin(9600);}
-{Serial.println("Controle_tx");}
-{_DELAY(20);}
+spawn USART_Init(9600);
+var[20] byte str = [] .. "Controle-tx\n\r";
+await USART_Tx(&str);
 
 var Lock spi = _;
 
@@ -22,18 +24,33 @@ var NRF24L01_Data nrf = val NRF24L01_Data(&spi, 8,7, _,_,_,_,_,_,_);
 spawn NRF24L01_Init(&nrf);
 await nrf.ok; // espera o rádio dar o sinal de ok
 
+var int sendStop= 0;
 var int i;
 loop i do
     await 1s;
     
     var byte v = 0;
-    _bitWrite(v, _PCINT19, call PCINT2_Get(_PCINT19)); //leitura do pino 3 - direita
-    _bitWrite(v, _PCINT20, call PCINT2_Get(_PCINT20)); //leitura do pino 4 - esquerda
-    _bitWrite(v, _PCINT21, call PCINT2_Get(_PCINT21)); //leitura do pino 5 - tras
-    _bitWrite(v, _PCINT22, call PCINT2_Get(_PCINT22)); //leitura do pino 6 - frente
+    _bitWrite(v, 0, call PCINT2_Get(_PCINT19)); //leitura do pino 3 - direita
+    _bitWrite(v, 1, call PCINT2_Get(_PCINT20)); //leitura do pino 4 - esquerda
+    _bitWrite(v, 2, call PCINT2_Get(_PCINT21)); //leitura do pino 5 - tras
+    _bitWrite(v, 3, call PCINT2_Get(_PCINT22)); //leitura do pino 6 - frente
     
-    var [1] byte buf = [v];
-    
-    await NRF24L01_Tx(&nrf, &buf);
-    {Serial.print("< "); Serial.println(@v); _DELAY(10);}
+    if (sendStop == 0) then
+        
+        var [1] byte buf = [v];
+        await NRF24L01_Tx(&nrf, &buf);
+        str = [] .. "< ";
+        call String_Append_INT(&str, v, _);
+        call String_Append_STR(&str, "\n\r");
+        await USART_Tx(&str);
+        if (v == 15) then
+            sendStop = 1;
+        end
+    else
+        if (v != 15) then
+            sendStop = 0;
+        end
+    end
 end
+
+//fazer tratamento com demux no radio para nao enviar caso esteja tudo em aberto

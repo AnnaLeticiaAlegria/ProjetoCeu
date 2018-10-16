@@ -1,3 +1,5 @@
 make CEU_SRC=libraries/driver-nrf24l01/examples/nrf24l01-tx.ceu ARD_PORT=/dev/ttyACM0
 make CEU_SRC=libraries/driver-nrf24l01/examples/nrf24l01-tx.ceu ARD_PORT=/dev/ttyACM1 ARD_BOARD=mega ARD_CPU=atmega2560
 cu -l /dev/ttyACM1
+
+Consertar o envio do controle --> está enviando sempre. Quando v for 15, era para enviar somente uma vez
