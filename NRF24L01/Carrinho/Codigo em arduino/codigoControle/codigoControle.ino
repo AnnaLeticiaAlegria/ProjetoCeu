@@ -36,11 +36,11 @@ void loop() {
       message[1] = digitalRead(backButton);
       message[2] = digitalRead(leftButton);
       message[3] = digitalRead(rightButton);
-      //int i;
-      //for (i = 0; i < 4; i = i + 1) {
-      //      Serial.print(message[i]);
-      //}
+      int i;
+      for (i = 0; i < 4; i = i + 1) {
+            Serial.print(message[i]);
+      }
       Serial.println("Transmitted");
       radio.write(&message,sizeof(message));
-      delay(100);       //You can play with this number
+      delay(1000);       //You can play with this number
 }

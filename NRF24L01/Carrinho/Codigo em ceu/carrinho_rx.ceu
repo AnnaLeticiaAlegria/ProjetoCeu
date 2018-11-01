@@ -24,6 +24,8 @@ var NRF24L01_Data nrf = val NRF24L01_Data(&spi, 8,7, _,_,_,_,_,_,_);
 spawn NRF24L01_Init(&nrf);
 await nrf.ok; // espera o rádio dar o sinal de ok
 
+//tem sempre que estar recebendo
+
 var int i;
 loop i do
     

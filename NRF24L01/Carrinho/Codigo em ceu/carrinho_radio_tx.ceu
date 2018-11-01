@@ -24,7 +24,7 @@ var NRF24L01_Data nrf = val NRF24L01_Data(&spi, 8,7, _,_,_,_,_,_,_);
 spawn NRF24L01_Init(&nrf);
 await nrf.ok; // espera o rádio dar o sinal de ok
 
-var int sendStop= 0;
+var int sendStop = 0;
 var int i;
 loop i do
     await 1s;
@@ -43,8 +43,8 @@ loop i do
         call String_Append_INT(&str, v, _);
         call String_Append_STR(&str, "\n\r");
         await USART_Tx(&str);
-        if (v == 15) then
-            sendStop = 1;
+        if (v == 15) then // os 4 pinos estão em aberto, nenhum botão está sendo pressionado
+			sendStop = 1;
         end
     else
         if (v != 15) then

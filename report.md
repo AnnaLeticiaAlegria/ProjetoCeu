@@ -189,14 +189,17 @@
         - código do carrinho reescrito e funcionando --> falta testar no carrinho com os motores
         - diferenças energéticas medidas --> remedir após consertar mal contato dos fios
  
-# **Semana 15/10/2018 - 21/10/2018**
+# **Semanas 15/10/2018 - 28/10/2018**
 
 ###   - Planejamentos:
         - fazer o carrinho funcionar de forma completa
         - corrigir o código para não enviar sempre os dados
+	- medir as diferenças energéticas usando o Arduino Pro-Mini
+	- ver conexões no Pro-Mini : ver se é necessário colocar um BEC antes de conectar a bateria e os pinos do NRF24L01
         
 ###   - Realizados: 
-
+	- código corrigido
+	- 
 
     
 

@@ -1,5 +1,17 @@
 Diferenças energéticas entre os códigos:
 
+Usando arduino UNO:
+    - Código do controle:
+    
+        - Em arduino: 100,1 mA
+        - Em ceu: 100,8 mA
+
+    - Código do carrinho:
+    
+        - Em arduino: 126 mA
+        - Em ceu: 115,0 mA
+
+Usando arduino Pro-mini:
     - Código do controle:
     
         - Em arduino: 125,9 mA
@@ -9,4 +21,3 @@ Diferenças energéticas entre os códigos:
     
         - Em arduino: 126 mA
         - Em ceu: 115,0 mA
-
