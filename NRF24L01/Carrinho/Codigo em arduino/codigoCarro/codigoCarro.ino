@@ -11,11 +11,15 @@ const int IN2 = 5;
 const int IN3 = 4;
 const int IN4 = 3;
 
+const int LED = 13;
+int ledStatus = 1;
+
 void setup() {
       pinMode(IN1,OUTPUT);
       pinMode(IN2,OUTPUT);
       pinMode(IN3,OUTPUT);
       pinMode(IN4,OUTPUT);
+      pinMode(LED,OUTPUT);
       Serial.begin(9600);
       
       radio.begin();
@@ -44,7 +48,7 @@ void loop() {
                   digitalWrite(IN2,LOW);
                   digitalWrite(IN3,LOW);
                   digitalWrite(IN4,LOW);
-                  Serial.println("LLLL");                  
+                  Serial.println("LLLL");          
             }
             if (sum==3) {
                   if (message[0]==0 && message[1]==1 && message[2]==1 && message[3]==1) {
@@ -86,7 +90,10 @@ void loop() {
                   digitalWrite(IN2,LOW);
                   digitalWrite(IN3,LOW);
                   digitalWrite(IN4,LOW);
-                  Serial.println("LLLL");
+                  Serial.println("LLLL");      
+                  digitalWrite(LED,!ledStatus);
+                  ledStatus = !ledStatus;  
             }
       }
+      delay(1000);
 }

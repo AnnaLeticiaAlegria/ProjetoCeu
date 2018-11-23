@@ -187,7 +187,7 @@
         
 ###   - Realizados: 
         - código do carrinho reescrito e funcionando --> falta testar no carrinho com os motores
-        - diferenças energéticas medidas --> remedir após consertar mal contato dos fios
+        - diferenças energéticas medidas --> remedir após consertar mau contato dos fios
  
 # **Semanas 15/10/2018 - 28/10/2018**
 
@@ -199,7 +199,35 @@
         
 ###   - Realizados: 
 	- código corrigido
-	- 
+	- Pro-Mini estudado - só conectar a bateria no Vin
+
+
+# **Semanas 29/10/2018 - 11/11/2018**
+
+###   - Planejamentos:
+        - fazer o carrinho funcionar de forma completa
+	- medir as diferenças energéticas usando o Arduino Pro-Mini
+        
+###   - Realizados: 
+	- Arduino Mini Ulta estudado e compreendido
 
     
+# **Semanas 12/11/2018 - 25/11/2018**
+
+###   - Planejamentos:
+        - ver porque o arduino para de enviar os dados quando fecha o monitor serial
+	- medir as diferenças energéticas usando o Arduino Pro-Mini
+        
+###   - Realizados: 
+	- medidas energéticas do Mega realizadas
+
+# **Semanas 26/11/2018 - 02/12/2018**
+
+###   - Planejamentos:
+        - ver porque o arduino para de enviar os dados quando fecha o monitor serial
+	- medir as diferenças energéticas usando o Arduino Pro-Mini
+	- corrigir mau contato nos fios, que faz com que o multimetro pare de medir algumas vezes
+        
+###   - Realizados: 
+
 

@@ -1,23 +1,49 @@
 Diferenças energéticas entre os códigos:
 
 Usando arduino UNO:
+	- Blink
+		
+		- Em arduino: 35,5 mA
+		- Em ceu: 27,30 mA
+
     - Código do controle:
     
-        - Em arduino: 100,1 mA
-        - Em ceu: 100,8 mA
+        - Em arduino: 84,8 mA
+        - Em ceu: 100,8 mA------------------
 
     - Código do carrinho:
     
-        - Em arduino: 126 mA
-        - Em ceu: 115,0 mA
+        - Em arduino: 126 mA-------------------
+        - Em ceu: 115,0 mA--------------
 
 Usando arduino Pro-mini:
+	- Blink
+		
+		- Em arduino: 6,4 mA
+		- Em ceu: 3,9 mA
+
     - Código do controle:
     
-        - Em arduino: 125,9 mA
-        - Em ceu: 110,4 mA
+        - Em arduino: 125,9 mA------------------
+        - Em ceu: 110,4 mA-------------
 
     - Código do carrinho:
     
-        - Em arduino: 126 mA
-        - Em ceu: 115,0 mA
+        - Em arduino: 126 mA-------------------
+        - Em ceu: 115,0 mA----------------
+
+Usando arduino MEGA:
+	- Blink
+		
+		- Em arduino: 45,7 mA
+		- Em ceu: 30,20 mA
+
+    - Código do controle:
+    
+        - Em arduino: 166,6 mA
+        - Em ceu: 146,7 mA
+
+    - Código do carrinho:
+    
+        - Em arduino: 164,8 mA
+        - Em ceu: 155,2 mA

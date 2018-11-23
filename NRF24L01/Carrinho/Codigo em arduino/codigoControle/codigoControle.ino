@@ -8,6 +8,7 @@ const int frontButton = 6; //pressing button moves toy car forward
 const int backButton = 5;  //pressing button moves toy car backward
 const int leftButton = 4;  //pressing button moves toy car to left
 const int rightButton = 3; //pressing button moves toy car to right
+const int led = 13;
 
 void setup() {
       // put your setup code here, to run once:
@@ -15,6 +16,7 @@ void setup() {
       pinMode(backButton,INPUT_PULLUP);
       pinMode(leftButton,INPUT_PULLUP);
       pinMode(rightButton,INPUT_PULLUP);
+      pinMode(led,OUTPUT);
       Serial.begin(9600);
 
       radio.begin();
@@ -42,5 +44,9 @@ void loop() {
       }
       Serial.println("Transmitted");
       radio.write(&message,sizeof(message));
-      delay(1000);       //You can play with this number
+
+      digitalWrite(led,HIGH);
+      delay(500);       //You can play with this number
+      digitalWrite(led,LOW);
+      delay(500);
 }
