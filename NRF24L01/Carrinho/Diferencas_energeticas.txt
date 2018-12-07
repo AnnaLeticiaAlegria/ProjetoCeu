@@ -8,8 +8,8 @@ Usando arduino UNO:
 
     - Código do controle:
     
-        - Em arduino: 84,8 mA
-        - Em ceu: 100,8 mA------------------
+        - Em arduino: 134,6 mA
+        - Em ceu: 139 mA
 
     - Código do carrinho:
     

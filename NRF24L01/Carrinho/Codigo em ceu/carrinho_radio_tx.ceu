@@ -4,8 +4,8 @@
 
 #define NRF24L01_IRQ INT0
 #include "nrf24l01.ceu"
-#include "usart.ceu"
-#include "string.ceu"
+//#include "usart.ceu"
+//#include "string.ceu"
 
 //input none PCINT2; 
 
@@ -14,9 +14,12 @@ call PCINT2_Enable(_PCINT20, on);
 call PCINT2_Enable(_PCINT21, on); 
 call PCINT2_Enable(_PCINT22, on); 
 
-spawn USART_Init(9600);
-var[20] byte str = [] .. "Controle-tx\n\r";
-await USART_Tx(&str);
+//spawn USART_Init(9600);
+//var[20] byte str = [] .. "Controle-tx\n\r";
+//await USART_Tx(&str);
+{Serial.begin(9600);}
+{Serial.println("Controle-tx\n\r");}
+{_DELAY(20);}
 
 var Lock spi = _;
 
@@ -39,10 +42,12 @@ loop i do
         
         var [1] byte buf = [v];
         await NRF24L01_Tx(&nrf, &buf);
-        str = [] .. "< ";
-        call String_Append_INT(&str, v, _);
-        call String_Append_STR(&str, "\n\r");
-        await USART_Tx(&str);
+ //       str = [] .. "< ";
+ //       call String_Append_INT(&str, v, _);
+ //       call String_Append_STR(&str, "\n\r");
+ //       await USART_Tx(&str);
+	{Serial.print("< "); Serial.println(@buf[0]); _DELAY(10);}
+
         if (v == 15) then // os 4 pinos estão em aberto, nenhum botão está sendo pressionado
 			sendStop = 1;
         end
@@ -52,5 +57,3 @@ loop i do
         end
     end
 end
-
-//fazer tratamento com demux no radio para nao enviar caso esteja tudo em aberto

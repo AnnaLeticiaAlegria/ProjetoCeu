@@ -1,0 +1,20 @@
+#include "usart.ceu"
+#include "string.ceu"
+
+
+spawn USART_Init(9600);
+var[20] byte str = [] .. "Serial teste\n\r";
+await USART_Tx(&str);
+
+var int i;
+loop i do
+    await 1s;
+    
+	str = [] .. "< ";
+	call String_Append_INT(&str, i, _);
+	call String_Append_STR(&str, "\n\r");
+	await USART_Tx(&str);
+
+end
+
+

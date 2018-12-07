@@ -227,7 +227,18 @@
         - ver porque o arduino para de enviar os dados quando fecha o monitor serial
 	- medir as diferenças energéticas usando o Arduino Pro-Mini
 	- corrigir mau contato nos fios, que faz com que o multimetro pare de medir algumas vezes
+	- corrigir erro no serial do Pro-Mini
         
 ###   - Realizados: 
+	- medidas realizadas mas devem ser refeitas
+	- mau contato dos fios deve ser no rádio
 
 
+# **Semanas 03/11/2018 - 09/12/2018**
+
+###   - Planejamentos:
+        - ver porque o arduino para de enviar os dados quando fecha o monitor serial
+	- medir as diferenças energéticas usando o Arduino Pro-Mini
+	- corrigir erro no serial do Pro-Mini (em ceu)
+        
+###   - Realizados: 
