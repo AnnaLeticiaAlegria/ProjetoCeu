@@ -5,6 +5,7 @@
 
 #define NRF24L01_IRQ INT0
 #include "nrf24l01.ceu"
+#include "wclock.ceu"
 #include "usart.ceu"
 #include "string.ceu"
 

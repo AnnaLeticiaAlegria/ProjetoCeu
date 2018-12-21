@@ -1,0 +1,28 @@
+#include "out.ceu"
+
+output high/low OUT_04; //LATCH DIO
+output high/low OUT_07; //CLK_DIO
+output high/low OUT_08; //DATA_DIO
+
+
+var[4] int vetor = [ 1,2,3,4 ];
+
+code/await Display (var&[4] int v) -> NEVER do
+	// Segment byte maps for numbers 0 to 9 
+	var[10] byte segment_map = [ 0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0X80, 0X90 ];
+	// Byte maps to select digit 1 to 4 
+	var[4] byte segment_select = [ 0xF1, 0xF2, 0xF4, 0xF8 ];
+	loop do
+		var int i;
+		loop i in [0 -> 4[ do
+			emit OUT(4, low);
+			_shiftOut ( 8, 7, _MSBFIRST, segment_map[v[i]] );
+			_shiftOut ( 8, 7, _MSBFIRST, segment_select[i] );
+			emit OUT(4, high);
+		end
+		await async do end;
+	end
+end
+
+spawn Display(&vetor);
+

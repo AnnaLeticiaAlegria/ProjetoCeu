@@ -234,7 +234,7 @@
 	- mau contato dos fios deve ser no rádio
 
 
-# **Semanas 03/11/2018 - 09/12/2018**
+# **Semanas 03/11/2018 - 26/12/2018**
 
 ###   - Planejamentos:
         - ver porque o arduino para de enviar os dados quando fecha o monitor serial
@@ -242,3 +242,4 @@
 	- corrigir erro no serial do Pro-Mini (em ceu)
         
 ###   - Realizados: 
+	- código do display feito, falta medir as diferenças energéticas

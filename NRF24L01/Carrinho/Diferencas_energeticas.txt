@@ -9,12 +9,12 @@ Usando arduino UNO:
     - Código do controle:
     
         - Em arduino: 134,6 mA
-        - Em ceu: 139 mA
+        - Em ceu: 126,3 mA
 
     - Código do carrinho:
     
-        - Em arduino: 126 mA-------------------
-        - Em ceu: 115,0 mA--------------
+        - Em arduino: 126 mA
+        - Em ceu: apx 108 mA-------------- retestar
 
 Usando arduino Pro-mini:
 	- Blink
@@ -24,19 +24,20 @@ Usando arduino Pro-mini:
 
     - Código do controle:
     
-        - Em arduino: 125,9 mA------------------
-        - Em ceu: 110,4 mA-------------
+        - Em arduino: 125,9 mA------------------ retestar
+        - Em ceu: 110,4 mA------------- retestar
 
     - Código do carrinho:
     
-        - Em arduino: 126 mA-------------------
-        - Em ceu: 115,0 mA----------------
+        - Em arduino: 126 mA------------------- retestar
+        - Em ceu: 115,0 mA---------------- retestar
 
 Usando arduino MEGA:
 	- Blink
 		
 		- Em arduino: 45,7 mA
 		- Em ceu: 30,20 mA
+
 
     - Código do controle:
     
